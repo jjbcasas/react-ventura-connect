@@ -1,0 +1,253 @@
+import cloudinary from '../middleware/cloudinary.js'
+import Post from '../models/Post.js'
+import User from '../models/User.js'
+import Comment from '../models/Comment.js'
+import mongoose from 'mongoose'
+
+export const getFeed = async ( req, res ) => {
+        try {
+            // const user = req.user
+            // Get all post
+            const posts = await Post.find().populate('user').sort({ createdAt: 'desc'})
+            // Get all Comments
+            const comments = await Comment.find().populate({
+                path: 'commentUser'
+            }).sort({ createdAt: 'desc'})
+            // Get all Users
+            const allUsers = await User.find().sort({ createdAt: 'desc'})
+
+            res.status(200).json({ posts, comments, allUsers})
+            // console.log(user)
+        } catch (error) {
+            console.log('Error in Fetching Feed:',error.message)
+            res.status(500).json({message: 'Server Error!'})
+        }
+    }
+
+export const createPost = async ( req, res ) => { 
+        try{
+            const { title, caption } = req.body
+            // const post = req.body ( also correct )
+
+            if ( !title || !caption ) {
+                return res.status(400).json({ message: 'Please provide all fields.'})
+            }
+            if ( !req.file ) {
+                return res.status(400).json({ message: 'No image file uploaded.'})
+            }
+            const uploadResult = await cloudinary.uploader.upload(req.file.path)
+
+            // Create a Post
+            const newPost = await Post.create({
+                title: req.body.title,
+                image: uploadResult.secure_url,
+                cloudinaryId: uploadResult.public_id,
+                caption: req.body.caption,
+                likes: 0,
+                user: req.user.id,
+                userName: req.user.userName
+            })
+                
+                console.log('Post has been added!')
+                res.status(201).json({newPost, message: 'Post added successfully!'})
+            } catch(error) {
+                console.log('Error in Creating Post:', error.message)
+                res.status(500).json({message: 'Server Error!'})
+            };
+    }
+
+export const likePost = async ( req, res ) => {
+        try {
+            const { id } = req.params
+
+            // Validate if the provided ID is a valid MongoDB ObjectId
+            if ( !mongoose.Types.ObjectId.isValid(id)){
+                return res.status(404).json({message: 'Invalid Post Id!'})
+            }
+
+            // Find a specific post and update
+            const updatedLike = await Post.findOneAndUpdate(
+                { _id: id},
+                {
+                    $inc: { likes: 1}
+                },
+                { new: true }
+            )
+
+            // Find a specific user and update
+            const updatedUser = await User.findOneAndUpdate(
+                { _id: req.user.id },
+                {
+                    $push: { likedPostId: id }
+                },
+                { new: true }
+            )
+
+            console.log('Likes +1!')
+            res.status(200).json({ message: 'Post Liked!', updatedLike, updatedUser })
+        } catch (error) {
+            console.error('Error in Liking Post:', error.message)
+            res.status(500).json({message: 'Server Error!' })
+        }
+    }
+
+export const minusLike = async ( req, res ) => {
+        try {
+            const { id } = req.params
+
+            // Validate if the provided ID is a valid MongoDB ObjectId
+            if ( !mongoose.Types.ObjectId.isValid(id)){
+                return res.status(404).json({message: 'Invalid Post Id!'})
+            }
+
+            // Find a specific post and update
+            const updatedLike = await Post.findOneAndUpdate(
+                { _id: id},
+                {
+                    $inc: { likes: -1}
+                },
+                { new: true }
+            )
+
+            // Find a specific user and update
+            const updatedUser = await User.findOneAndUpdate(
+                { _id: req.user.id },
+                {
+                    $pull: { likedPostId: id }
+                },
+                { new: true }
+            )
+
+            console.log('Likes -1!')
+            res.status(200).json({ message: 'Post Unliked!', updatedLike, updatedUser })
+        } catch (error) {
+            console.error('Error in Unliking Post:', error.message)
+            res.status(500).json({message: 'Server Error!' })
+        }
+    }
+
+export const deletePost = async ( req, res ) => {
+        try {
+            const { id } = req.params
+
+            // Validate if the provided ID is a valid MongoDB ObjectId
+            if ( !mongoose.Types.ObjectId.isValid(id)){
+                return res.status(404).json({message: 'Invalid Post Id!'})
+            }
+            // Find a specific post and delete
+            let post = await Post.findById({ _id: id })
+
+            await cloudinary.uploader.destroy(post.cloudinaryId)
+
+            await Post.deleteOne({ _id: id })
+
+            console.log('Deleted Post!')
+            res.status(200).json({message: 'Post Deleted!'})
+        } catch (error) {
+            console.error('Error in Deleting Post:', error.message)
+            res.status(500).json({message: 'Server Error!' })
+        }
+    }
+
+export const createComment = async ( req, res ) => {
+        try {
+            if ( !req.body.comment /* const { comment } = req.body */) {
+                return res.status(404).json({ message: 'Please provide all fields.'})
+            }
+            // Create comment
+            const newComment = await Comment.create({
+                comment: req.body.comment,
+                commentUser: req.user.id,
+                commentUserName: req.user.userName ,
+                postId: req.params.id
+            })
+
+            const comment = await Comment.findById(newComment._id).populate({
+                path: 'commentUser'
+            })
+
+            console.log('Comment has been added!')
+            res.status(201).json({comment, message: 'Comment added successfully!' })
+        } catch (error) {
+            console.log('Error in Creating Comment:', error.message)
+            res.status(500).json({message: 'Server Error!'})
+        }
+    }
+
+export const followUser = async ( req, res ) => {
+        try {
+            const { id } = req.params
+
+            // Validate if the provided ID is a valid MongoDB ObjectId
+            if ( !mongoose.Types.ObjectId.isValid(id)){
+                return res.status(404).json({message: 'Invalid Post Id!'})
+            }
+
+            // Find a specific user and update
+            const updatedFollow = await User.findOneAndUpdate(
+                { _id: id },
+                {
+                    $push: {
+                        followerId: req.user.id,
+                    }
+                },
+                { new: true }
+            )
+        
+            // Find a specific user and update
+            await User.findOneAndUpdate(
+                { _id: req.user.id },
+                {
+                    $push: {
+                        followingId: id
+                    }
+                },
+                { new: true }
+            )
+        
+            console.log('Followed a user!')
+            res.status(200).json({updatedFollow, message: 'Followed successfully!'})
+        } catch (error) {
+            console.log('Error in Following User:', error.message)
+            res.status(500).json({message: 'Server Error!' })
+        }
+    }
+
+export const unfollowUser = async ( req, res ) => {
+        try {
+             const { id } = req.params
+
+            // Validate if the provided ID is a valid MongoDB ObjectId
+            if ( !mongoose.Types.ObjectId.isValid(id)){
+                return res.status(404).json({message: 'Invalid Post Id!'})
+            }
+
+            // Find a specific user and update
+            const updatedUnfollow = await User.findOneAndUpdate(
+                { _id: id },
+                {
+                    $pull: {
+                        followerId: req.user.id
+                    }
+                },
+                { new: true }
+            )
+        
+            // Find a specific user and update
+            await User.findOneAndUpdate(
+                { _id: req.user.id },
+                {
+                    $pull: {
+                        followingId: id
+                    }
+                },
+                { new: true }
+            )
+
+            console.log('Unfollowed a user!')
+            res.status(200).json({ updatedUnfollow, message: 'Unfollowed successfully!'})
+        } catch (error) {
+            console.log('Error in Following User:', error.message)
+            res.status(500).json({message: 'Server Error!' })
+        }
+    }

@@ -1,0 +1,18 @@
+import express from 'express'
+const router = express.Router()
+import { getUser, postLogin, logout, postSignup} from '../controllers/auth.js'
+import passport from 'passport'
+
+// Auth Routes
+router.get('/user', getUser)
+// router.get('/login', getUser)
+router.post('/login', postLogin)
+router.get('/logout', logout)
+// router.get('/signup', getSignup)
+router.post('/signup', postSignup)
+
+// Google Routes
+// router.get('/auth/google', passport.authenticate('google', { scope: ['email','profile'], prompt: 'select_account'}))
+// router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), googleCallback)
+
+export default router
