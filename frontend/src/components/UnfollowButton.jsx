@@ -1,7 +1,7 @@
-const UnfollowButton = ({classNameOne, unfollowUser, postId}) => {
+const UnfollowButton = ({classNameOne, unfollowUser, userId}) => {
   return (
     <div className="w-20 mx-auto">
-        <button className={`btn btn-soft btn-primary w-full ${classNameOne}`} type="button" onClick={()=>unfollowUser(postId)}>Unfollow</button>
+        <button className={`btn btn-soft btn-primary w-full ${classNameOne}`} type="button" onClick={()=>unfollowUser(userId)}>Unfollow</button>
     </div>
   )
 }

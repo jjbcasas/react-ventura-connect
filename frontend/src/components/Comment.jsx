@@ -5,12 +5,12 @@ import Avatar from "./Avatar"
 const Comment = ({ comment, padding, accountUser }) => {
   return (
     <div>
-        <li className={`flex ${padding}`}>
+        <li className={`flex ${padding} items-center`}>
         {/* <!-- Avatar of each comment --> */}
         { comment?.commentUser?.profileImage ? (
         // {/* For comments with avatar */}
             <div className="w-1/8">
-                <Avatar src={comment?.commentUser?.profileImage} link={`/profile/${comment?.commentUser?._id}` } user={comment?.commentUser} classNameOne='w-full my-5' classNameTwo='w-12 mx-auto' p='p-0'/>
+                <Avatar src={comment?.commentUser?.profileImage} link={`/profile/${comment?.commentUser?._id}` } user={comment?.commentUser} classNameOne='w-full my-auto' classNameTwo='w-12' p='p-0'/>
                 {/* <div className="avatar w-full my-5">
                     <div className="w-12 rounded-full mx-auto">
                         <Link to={`/profile/${comment?.commentUser?._id}` }>
@@ -23,7 +23,7 @@ const Comment = ({ comment, padding, accountUser }) => {
         
         // {/* // <!-- for comments without avatar --> */}
             <div className="w-1/8">
-                <Placeholder user={comment.commentUser} link={`/profile/${comment?.commentUser?._id}`} classNameOne='w-full my-5' padding='p-0' classNameTwo='w-12 mx-auto'/>
+                <Placeholder user={comment.commentUser} link={`/profile/${comment?.commentUser?._id}`} classNameOne='w-full my-auto' padding='p-0' classNameTwo='w-12'/>
                 {/* <Link to={`/profile/${comment?.commentUser?._id}` }>
                     <div className="avatar avatar-placeholder w-full my-5">
                         <div className="bg-neutral text-neutral-content w-12 rounded-full mx-auto">

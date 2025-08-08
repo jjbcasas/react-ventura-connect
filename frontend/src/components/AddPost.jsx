@@ -1,10 +1,11 @@
-import { useState } from "react"
+import { useState, useRef } from "react"
 import toast from 'react-hot-toast'
 
-const AddPost = ({width='w-full', classNameOne='mx-auto', addPost, fileInputRef, divWidth = 'w-1/2'}) => {
+const AddPost = ({width='w-full', classNameOne='mx-auto', addPost, divWidth = 'w-1/2'}) => {
+    const fileInputRef = useRef(null)
     const [ title, setTitle] = useState('')
     const [ caption, setCaption] = useState('')
-    const [ image, setImage] = useState(null)
+    // const [ image, setImage] = useState(null)
 
     const handleSubmit = async(e) => {
         try {
@@ -48,18 +49,18 @@ const AddPost = ({width='w-full', classNameOne='mx-auto', addPost, fileInputRef,
 
   return (
     <>
-        {/* // <div className="card bg-base-100 w-2/3 shadow-sm mb-4 mx-auto"> */}
-            <h3 className={classNameOne}>Add a post</h3>
+        <details>
+            <summary className="text-center">Add a post</summary>
             <fieldset className={`fieldset ${width} bg-base-200 border border-base-300 p-4 rounded-box mx-auto`}>
                 <form onSubmit={handleSubmit} encType="multipart/form-data">
-                    <div className="flex flex-wrap">
+                    <div className="flex flex-wrap md:justify-center">
                         <div className={divWidth}>
                             <label htmlFor="title" className="fieldset-label">Title</label>
                             <input 
                                 type="text" 
                                 name="title" 
                                 id="title" 
-                                className="input"
+                                className="input w-full"
                                 required
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)} />
@@ -72,13 +73,12 @@ const AddPost = ({width='w-full', classNameOne='mx-auto', addPost, fileInputRef,
                             <textarea 
                                 name="caption" 
                                 id="caption"  
-                                className="input pt-2" 
+                                className="input pt-2 w-full" 
                                 required
                                 value={caption}
                                 onChange={(e) => setCaption(e.target.value)}/>
-
                         </div>
-                        <div className={divWidth}>
+                        <div className={`md:${divWidth} w-2/3`}>
                             <label 
                                 htmlFor="imageUpload" className="fieldset-legend">
                                 Image
@@ -86,17 +86,17 @@ const AddPost = ({width='w-full', classNameOne='mx-auto', addPost, fileInputRef,
                             <input 
                                 type="file" 
                                 name="file" 
-                                id="imageUpload" className="file-input" 
+                                id="imageUpload" className="file-input w-full" 
                                 // required
                                 ref={ fileInputRef} />
                         </div>
-                        <div className="w-1/3 pt-8 flex justify-end">
+                        <div className="w-1/3 pt-7 md:pt-4 flex justify-end">
                             <button type="submit" className="btn btn-neutral">Post</button>
                         </div>
                     </div>
                 </form>
             </fieldset>
-        {/* // </div> */}
+        </details>
     </>
   )
 }

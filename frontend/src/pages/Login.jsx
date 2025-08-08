@@ -40,7 +40,7 @@ const Login = () => {
         }
         if (data.user){
             setUser(data.user)
-            // navigate('/feed')
+            navigate('/feed')
         }
         // 1. Check `response.ok` for success (status 200-299)
     //     if (response.ok) {

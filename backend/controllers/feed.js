@@ -16,10 +16,10 @@ export const getFeed = async ( req, res ) => {
             // Get all Users
             const allUsers = await User.find().sort({ createdAt: 'desc'})
 
+            console.log('Data fetched!')
             res.status(200).json({ posts, comments, allUsers})
-            // console.log(user)
         } catch (error) {
-            console.log('Error in Fetching Feed:',error.message)
+            console.log('Error in Fetching Data:',error.message)
             res.status(500).json({message: 'Server Error!'})
         }
     }
@@ -47,9 +47,13 @@ export const createPost = async ( req, res ) => {
                 user: req.user.id,
                 userName: req.user.userName
             })
+
+            const post = await Post.findById(newPost._id).populate({
+                path: 'user'
+            })
                 
                 console.log('Post has been added!')
-                res.status(201).json({newPost, message: 'Post added successfully!'})
+                res.status(201).json({ post, message: 'Post added successfully!'})
             } catch(error) {
                 console.log('Error in Creating Post:', error.message)
                 res.status(500).json({message: 'Server Error!'})
@@ -150,29 +154,30 @@ export const deletePost = async ( req, res ) => {
     }
 
 export const createComment = async ( req, res ) => {
-        try {
-            if ( !req.body.comment /* const { comment } = req.body */) {
-                return res.status(404).json({ message: 'Please provide all fields.'})
-            }
-            // Create comment
-            const newComment = await Comment.create({
-                comment: req.body.comment,
-                commentUser: req.user.id,
-                commentUserName: req.user.userName ,
-                postId: req.params.id
-            })
-
-            const comment = await Comment.findById(newComment._id).populate({
-                path: 'commentUser'
-            })
-
-            console.log('Comment has been added!')
-            res.status(201).json({comment, message: 'Comment added successfully!' })
-        } catch (error) {
-            console.log('Error in Creating Comment:', error.message)
-            res.status(500).json({message: 'Server Error!'})
+    try {
+        if ( !req.body.comment /* const { comment } = req.body */) {
+            return res.status(404).json({ message: 'Please provide all fields.'})
         }
+        
+        // Create comment
+        const newComment = await Comment.create({
+            comment: req.body.comment,
+            commentUser: req.user.id,
+            commentUserName: req.user.userName ,
+            postId: req.params.id
+        })
+
+        const comment = await Comment.findById(newComment._id).populate({
+            path: 'commentUser'
+        })
+
+        console.log('Comment has been added!')
+        res.status(201).json({comment, message: 'Comment added successfully!' })
+    } catch (error) {
+        console.log('Error in Creating Comment:', error.message)
+        res.status(500).json({message: 'Server Error!'})
     }
+}
 
 export const followUser = async ( req, res ) => {
         try {
@@ -184,7 +189,7 @@ export const followUser = async ( req, res ) => {
             }
 
             // Find a specific user and update
-            const updatedFollow = await User.findOneAndUpdate(
+            await User.findOneAndUpdate(
                 { _id: id },
                 {
                     $push: {
@@ -195,7 +200,7 @@ export const followUser = async ( req, res ) => {
             )
         
             // Find a specific user and update
-            await User.findOneAndUpdate(
+            const updatedFollowing = await User.findOneAndUpdate(
                 { _id: req.user.id },
                 {
                     $push: {
@@ -206,7 +211,7 @@ export const followUser = async ( req, res ) => {
             )
         
             console.log('Followed a user!')
-            res.status(200).json({updatedFollow, message: 'Followed successfully!'})
+            res.status(200).json({ updatedFollowing, message: 'Followed successfully!'})
         } catch (error) {
             console.log('Error in Following User:', error.message)
             res.status(500).json({message: 'Server Error!' })
@@ -223,7 +228,7 @@ export const unfollowUser = async ( req, res ) => {
             }
 
             // Find a specific user and update
-            const updatedUnfollow = await User.findOneAndUpdate(
+            await User.findOneAndUpdate(
                 { _id: id },
                 {
                     $pull: {
@@ -234,7 +239,7 @@ export const unfollowUser = async ( req, res ) => {
             )
         
             // Find a specific user and update
-            await User.findOneAndUpdate(
+            const updatedUnfollowing = await User.findOneAndUpdate(
                 { _id: req.user.id },
                 {
                     $pull: {
@@ -245,7 +250,7 @@ export const unfollowUser = async ( req, res ) => {
             )
 
             console.log('Unfollowed a user!')
-            res.status(200).json({ updatedUnfollow, message: 'Unfollowed successfully!'})
+            res.status(200).json({ updatedUnfollowing, message: 'Unfollowed successfully!'})
         } catch (error) {
             console.log('Error in Following User:', error.message)
             res.status(500).json({message: 'Server Error!' })

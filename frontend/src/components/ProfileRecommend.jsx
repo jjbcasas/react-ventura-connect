@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 
 const ProfileRecommend = ({following, width='w-12'}) => {
     return (
-        <li>
+        <li /*className='md:w-sm'*/>
             {following.profileImage ? (
                 <div className="avatar w-full p-2">
                     <div className={`rounded-full ${width}`}>

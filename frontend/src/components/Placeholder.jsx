@@ -1,6 +1,6 @@
 import { Link, useLocation, useParams } from "react-router-dom"
 
-const Placeholder = ({ user, classNameOne, classNameTwo, link= `/profile/${user?._id}`, children, padding='p-2' }) => {
+const Placeholder = ({ user, classNameOne, classNameTwo, link= `/profile/${user?._id}`, children, padding='md:p-2 p-0' }) => {
   // const { id } = useParams()
   const location = useLocation()
   const shouldShowAvatarContent = location.pathname !== `/profile/${user?._id}`
