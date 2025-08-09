@@ -23,6 +23,7 @@ import { connectDB } from './config/database.js'
 import feedRoutes from './routes/feed.js'
 import mainRoutes from './routes/main.js'
 import profileRoutes from './routes/profile.js'
+import postRoutes from './routes/post.js'
 
 // use .env file in config folder
 dotenv.config({ path: './backend/config/.env'})
@@ -78,6 +79,7 @@ app.use(flash())
 app.use('/', mainRoutes)
 app.use('/feed', feedRoutes)
 app.use('/profile', profileRoutes)
+app.use('/post', postRoutes)
 
 // server running
 app.listen(process.env.PORT, () => {

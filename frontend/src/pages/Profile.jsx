@@ -297,7 +297,7 @@ const Profile = () => {
                         <div className="w-full sm:w-1/3 md:w-full">
                         { accountUser?.profileImage ?
                                 
-                            <Avatar src={accountUser?.profileImage} user={accountUser} classNameOne='w-full' classNameTwo="w-20 mx-auto" />
+                            <Avatar src={accountUser?.profileImage} user={accountUser} classNameOne='w-full pt-10' classNameTwo="w-20 mx-auto" />
                             : /* No Profile Image */
                             <Placeholder user={accountUser} classNameOne='w-1/4 md:w-full' classNameTwo='w-20 mx-auto'/> }
                         

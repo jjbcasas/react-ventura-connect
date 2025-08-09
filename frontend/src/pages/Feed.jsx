@@ -227,8 +227,8 @@ const Feed = () => {
     }
 
   return (
-    <div className="flex flex-wrap justify-evenly min-h-125">
-            <div className="w-4/5 sm:w-2/3 pt-4">
+    <section className="flex flex-wrap justify-evenly min-h-125">
+            <div className="w-3/4 sm:w-2/3 pt-4">
                 
                 <div className="card bg-base-100 w-2/3 shadow-sm mb-4 mx-auto">
                     <AddPost addPost={addPost} fileInputRef={fileInputRef} />
@@ -248,9 +248,9 @@ const Feed = () => {
             </div>
 
             {/* <!-- Right Section/Div --> */}
-            <div className="w-1/5 sm:w-1/3 px-1">
+            <div className="w-1/4 sm:w-1/3 px-1">
                     {/* <Recommend /> */}
-                    <h3 className="text-xs sm:text-base text-center pt-4"><strong>Recommended people</strong></h3>
+                <h3 className="text-xs sm:text-base text-center pt-4"><strong>Recommended people</strong></h3>
                 <div className="card w-full bg-base-96 card-xs shadow-sm">
                     <div className="card-body">
                         <ul className="flex flex-wrap justify-center">
@@ -262,7 +262,7 @@ const Feed = () => {
                     </div>
                 </div>
             </div>
-        </div>
+    </section>
   )
 }
 

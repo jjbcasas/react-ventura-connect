@@ -10,7 +10,7 @@ import Avatar from "./Avatar"
 import UnfollowButton from "./UnfollowButton"
 import UnlikeButton from "./UnlikeButton"
 
-const Post = ({ user, post ,comments, likePost, unlikePost, addComment, deletePost, followUser, unfollowUser, classNameOne="w-9/10 sm:w-2/3 mx-auto" }) => {
+const Post = ({ user, post ,comments, likePost, unlikePost, addComment, deletePost, followUser, unfollowUser, classNameOne="w-9/10 lg:w-2/3 mx-auto" }) => {
 
     return (
         <li className={`card bg-base-100 shadow-sm mb-4 ${classNameOne}`}>
@@ -49,7 +49,7 @@ const Post = ({ user, post ,comments, likePost, unlikePost, addComment, deletePo
                     <img src={ post?.image }/>
                 </Link>
             </figure>
-            <div className="card-body">
+            <div className="card-body p-2 sm:p-8">
                 <div className="flex flex-wrap">
                     <div className="w-1/2">
                         <h2 className="card-title">{ post.title }</h2>

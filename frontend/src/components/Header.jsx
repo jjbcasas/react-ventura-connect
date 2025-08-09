@@ -8,7 +8,7 @@ const Header = ({data,user}) => {
   const location = useLocation()
   const shouldShowHeaderContent = 
     location.pathname === '/feed' || 
-    location.pathname === '/post' || 
+    location.pathname === `/post/${id}` || 
     location.pathname === `/profile/${id}`
 
     console.log(user)

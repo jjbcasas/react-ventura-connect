@@ -64,7 +64,7 @@ const ProfilePost = ({ user, post, accountUser, comments, likePost, unlikePost, 
         <div className="py-2 px-6">
             <h2 className="pt-4">Comments</h2>
             {/* <!-- Comment Form --> */}
-            <AddComment addComment={addComment} postId={post._id}/>
+            <AddComment addComment={addComment} postId={post?._id}/>
             <ul>
                 {comments.map( comment => (
                     comment.postId === post?._id &&

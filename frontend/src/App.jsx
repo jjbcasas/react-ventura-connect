@@ -22,7 +22,7 @@ const router = createBrowserRouter(
       <Route path='/feed' element={<Feed />}/>
       {/* {isAuthenticated ? <Route path='/feed' element={<Feed />}/> : <Route path='/login' element={<Login />}/> } */}
       <Route path='/login' element={<Login />}/>
-      <Route path='/post' element={<Post />}/>
+      <Route path='/post/:id' element={<Post />}/>
       <Route path='/profile/:id' element={<Profile />}/>
       <Route path='/signup' element={<Signup />}/>
     </Route>
