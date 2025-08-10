@@ -35,6 +35,7 @@ const Profile = () => {
                         setComments(data.comments)
                         setAccountUser(data.accountUser)
                         // setUsersFriends(data.usersFriends)
+                        console.log(data.posts)
                     }
                 } else {
                     console.error('Error fetching data:', data.message)
@@ -299,7 +300,7 @@ const Profile = () => {
                                 
                             <Avatar src={accountUser?.profileImage} user={accountUser} classNameOne='w-full pt-10' classNameTwo="w-20 mx-auto" />
                             : /* No Profile Image */
-                            <Placeholder user={accountUser} classNameOne='w-1/4 md:w-full' classNameTwo='w-20 mx-auto'/> }
+                            <Placeholder user={accountUser} classNameOne='w-full pt-10' classNameTwo='w-20 mx-auto'/> }
                         
                             {/* Upload Button for User */}
                             { accountUser?._id === user?._id ? (
@@ -327,11 +328,12 @@ const Profile = () => {
                             : <p className="text-center"><strong>Email</strong>: { accountUser?.email } </p> }
 
                         </div>
-                        <div className="w-full sm:w-2/3 md:w-full grow-1 px-2">
 
-                        { accountUser?._id === user?._id && <AddPost width='w-full grow-2' classNameOne="pt-4 text-center" divWidth='w-full' addPost={addPost} />}
+                        { accountUser?._id === user?._id && 
+                            <div className="w-full sm:w-2/3 md:w-full grow-1 px-2">
+                                <AddPost width='w-full grow-2' classNameOne="pt-4 text-center" divWidth='w-full' addPost={addPost} />
+                            </div>}
                         </div>
-                    </div>
                 </section>
                 
                 {/* Profile Feed for users without post */}

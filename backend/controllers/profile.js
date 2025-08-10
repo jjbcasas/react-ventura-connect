@@ -15,7 +15,12 @@ export const getProfile = async( req, res ) => {
             }
 
             // Find all post under that specific user
-            const posts = await Post.find({ user: req.params.id }).sort({ createdAt: 'desc'})
+            const posts = await Post.find({ user: req.params.id }).populate({
+            path: 'user',
+                populate: {
+                    path: 'followingId'
+                }
+        }).sort({ createdAt: 'desc'})
 
             // Get the user that owns the specific profile page
             const accountUser = await User.findOne({ _id: req.params.id }).populate('followingId').sort({ createdAt: 'desc'})

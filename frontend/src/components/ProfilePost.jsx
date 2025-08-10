@@ -46,7 +46,7 @@ const ProfilePost = ({ user, post, accountUser, comments, likePost, unlikePost, 
                 )}
 
                 {/* <!-- Delete button for login users only --> */}
-                { post?.user === user?._id &&
+                { post?.user?._id === user?._id &&
                     < DeleteButton deletePost={deletePost} postId={post?._id} className='btn btn-primary sm:w-1/4 md:w-1/3 lg:w-1/4'/>
                 }
             </div>

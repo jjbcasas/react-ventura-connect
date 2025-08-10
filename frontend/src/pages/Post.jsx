@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import AddPost from "../components/AddPost"
 import Spinner from "../components/Spinner"
-import { useOutletContext, useParams} from "react-router-dom"
+import { useOutletContext, useParams, useNavigate } from "react-router-dom"
 import toast from 'react-hot-toast'
 import Avatar from "../components/Avatar"
 import Placeholder from "../components/Placeholder"
@@ -13,14 +13,15 @@ import UnfollowButton from "../components/UnfollowButton"
 
 const Post = () => {
   const [post, setPost] = useState({})
-      const [comments, setComments] = useState([])
-      const [accountUser, setAccountUser] = useState({})
-      // const [usersFriends, setUsersFriends] = useState([])
-      const [loading, setLoading] = useState(true)
-      const { user, setUser, setMessages } = useOutletContext()
-      const { id } = useParams()
+  const [comments, setComments] = useState([])
+  const [accountUser, setAccountUser] = useState({})
+  // const [usersFriends, setUsersFriends] = useState([])
+  const [loading, setLoading] = useState(true)
+  const { user, setUser, setMessages } = useOutletContext()
+  const { id } = useParams()
+  const navigate = useNavigate()
 
-      useEffect( () => {
+    useEffect( () => {
         setLoading(true)
         const fetchData = async () => {
             try {
@@ -83,7 +84,7 @@ const Post = () => {
 
     const followUser = async (userId) => {
         try {
-            const res = await fetch(`/api/profile/followUser/${userId}`,{
+            const res = await fetch(`/api/post/followUser/${userId}`,{
                 method: 'PUT',
                 credentials: 'include',
             })
@@ -106,7 +107,7 @@ const Post = () => {
 
     const unfollowUser = async (userId) => {
         try {
-            const res = await fetch(`/api/profile/unfollowUser/${userId}`,{
+            const res = await fetch(`/api/post/unfollowUser/${userId}`,{
                 method: 'PUT',
                 credentials: 'include',
             })
@@ -129,7 +130,7 @@ const Post = () => {
 
     const likePost = async (postId) => {
         try {
-            const res = await fetch(`/api/profile/likePost/${postId}`,{
+            const res = await fetch(`/api/post/likePost/${postId}`,{
                 method: 'PUT',
                 credentials: 'include',
             })
@@ -139,10 +140,9 @@ const Post = () => {
             if ( res.ok ) {
                 if ( data.updatedUser && data.updatedLike ) {
                     setUser({...user, likedPostId: data.updatedUser.likedPostId})
-                    setPost(post.map( post => (
-                        post._id === postId ? { ...post, likes: data.updatedLike.likes } : post
-                    )))
-                    setAccountUser( accountUser._id === user._id ? {...accountUser, likedPostId: data.updatedUser.likedPostId } : {...accountUser})
+                    setPost(post._id === postId ? { ...post, likes: data.updatedLike.likes } : post
+                    )
+                    setAccountUser( accountUser._id === user._id ? {...accountUser, likedPostId: data.updatedUser.likedPostId } : accountUser)
                     toast.success(data.message)
                 } else {
                     console.error('Error in liking post:', data.message || 'Unknown error')
@@ -158,7 +158,7 @@ const Post = () => {
 
     const unlikePost = async (postId) => {
         try {
-            const res = await fetch(`/api/profile/minusLike/${postId}`,{
+            const res = await fetch(`/api/post/minusLikePost/${postId}`,{
                 method: 'PUT',
                 credentials: 'include',
             })
@@ -168,10 +168,9 @@ const Post = () => {
             if ( res.ok ) {
                 if ( data.updatedUser && data.updatedLike ) {
                     setUser({...user, likedPostId: data.updatedUser.likedPostId})
-                    setPost(post.map( post => (
-                        post._id === postId ? { ...post, likes: data.updatedLike.likes } : post
-                    )))
-                    setAccountUser( accountUser._id === user._id ? {...accountUser, likedPostId: data.updatedUser.likedPostId } : {...accountUser})
+                    setPost(post._id === postId ? { ...post, likes: data.updatedLike.likes } : post
+                    )
+                    setAccountUser( accountUser._id === user._id ? {...accountUser, likedPostId: data.updatedUser.likedPostId } : accountUser)
                     toast.success(data.message)
                 }
             } else {
@@ -187,7 +186,7 @@ const Post = () => {
 
     const deletePost = async (postId) => {
         try {
-            const res = await fetch(`/api/profile/deletePost/${postId}`, {
+            const res = await fetch(`/api/post/deletePost/${postId}`, {
                 method: 'DELETE',
                 credentials: 'include',
             })
@@ -195,7 +194,8 @@ const Post = () => {
             const data = await res.json()
             
             if ( res.status === 200 ) {
-                setPost(post.filter( post => post._id !== postId))
+                setPost({})
+                navigate(`/profile/${post.user}`)
                 toast.success(data.message || 'Post deleted successfully!' )
             } else {
                 console.error('Error deleting post:', data.message || 'Unknown error')
@@ -209,7 +209,7 @@ const Post = () => {
 
     const addComment = async(comment, postId) => {
         try {
-            const res = await fetch(`/api/profile/comments/${postId}`,{
+            const res = await fetch(`/api/post/comments/${postId}`,{
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -237,7 +237,7 @@ const Post = () => {
 
     const uploadPhoto = async (formData) => {
         try {
-            const res = await fetch('/api/profile/uploadProfilePhoto', {
+            const res = await fetch('/api/post/uploadProfilePhoto', {
                 method: 'PUT',
                 credentials: 'include',
                 body: formData
@@ -262,7 +262,7 @@ const Post = () => {
 
     const changePhoto = async (formData) => {
         try {
-            const res = await fetch('/api/profile/changeProfilePhoto', {
+            const res = await fetch('/api/post/changeProfilePhoto', {
                 method: 'PUT',
                 credentials: 'include',
                 body: formData
@@ -292,14 +292,14 @@ const Post = () => {
                      <Spinner loading={loading} />
                ): (
                   <>
-                      <section className="w-3/5 md:w-1/4 py-12 px-2">
+                      <section className="w-3/4 md:w-1/4 py-12 px-2">
                           <div className="flex md:flex-wrap sm:no-wrap flex-wrap justify-around">
                               <div className="w-full sm:w-1/3 md:w-full">
                               { accountUser?.profileImage ?
                                       
                                   <Avatar src={accountUser?.profileImage} user={accountUser} classNameOne='w-full' classNameTwo="w-20 mx-auto" />
                                   : /* No Profile Image */
-                                  <Placeholder user={accountUser} classNameOne='w-1/4 md:w-full' classNameTwo='w-20 mx-auto'/> }
+                                  <Placeholder user={accountUser} classNameOne='w-full' classNameTwo='w-20 mx-auto'/> }
                               
                                   {/* Upload Button for User */}
                                   { accountUser?._id === user?._id ? (
@@ -342,7 +342,7 @@ const Post = () => {
                       </section>
                       
                       {/* Friends List Section of User */}
-                      <section className="w-2/5 md:w-1/4 order-2 md:order-3 px-2">
+                      <section className="w-1/4 order-2 md:order-3 px-2">
                           {/* <Recommend /> */}
                           <h3 className="text-center pt-4"><strong>{ accountUser?._id === user?._id ? 'My Friends' : `${accountUser?.userName}'s Friends` }</strong></h3>
                           <div className="card w-full bg-base-100 card-xs shadow-sm">
