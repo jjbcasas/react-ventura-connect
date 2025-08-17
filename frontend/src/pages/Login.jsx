@@ -1,9 +1,10 @@
-import { useOutletContext,useNavigate, Link } from 'react-router-dom'
+import { /*useOutletContext,*/useNavigate, Link } from 'react-router-dom'
 // import Input from '../components/Input'
 // import Submit from '../components/Submit'
 import { FaArrowLeft } from 'react-icons/fa'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
+import { useAuth } from '../context/AuthContext'
 // import AlertMessages from '../components/AlertMessages'
 
 const Login = () => {
@@ -11,78 +12,62 @@ const Login = () => {
     const navigate = useNavigate()
     const [ email, setEmail] = useState('')
     const [ password, setPassword ] = useState('')
-    const { setUser, setMessages } = useOutletContext()
+    // const { setUser /*, setMessages*/ } = useOutletContext()
+    const { login } = useAuth()
 
     // console.log(user)
 
-    const handleSubmit = async (event) => {
-        event.preventDefault()
+    const handleSubmit = async (e) => {
+        e.preventDefault()
 
         const newLogin = {
             email,
             password
         }
-        // try{
-        const response = await fetch('/api/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(newLogin),
-            credentials: 'include'
-        })
-        const data = await response.json()
-        console.log(data)
+        const result = await login(newLogin)
 
-        if (data.message){
-            setMessages(data.message)
-            // toast.error("login success!")
-        }
-        if (data.user){
-            setUser(data.user)
+        if ( result.success ) {
             navigate('/feed')
         }
-        // 1. Check `response.ok` for success (status 200-299)
-    //     if (response.ok) {
-    //         // Successful login
-    //         if (data.message) {
-    //             // Assuming `setMessages` is for a generic notification system
-    //             setMessages(data.message);
-    //         }
-    //         if (data.user) {
-    //             // If this is a direct login handler, update user state
-    //             setUser(data.user);
-    //             navigate('/feed'); // Navigate on success
-    //         }
-    //     } else {
-    //         // Server responded with an error status (e.g., 400, 401, 500)
-    //         console.error('Login failed:', data.message || 'Unknown error');
-    //         // Assuming `setMessages` is used for displaying errors to the user
-    //         setMessages(data.message || 'Login failed. Please try again.');
+        // try{
+        //     const res = await fetch('/api/login', {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json'
+        //         },
+        //         body: JSON.stringify(newLogin),
+        //         credentials: 'include'
+        //     })
+        //     const data = await res.json()
+        //     console.log(data)
 
-    //         // You might want more specific error handling here:
-    //         // if (response.status === 401) {
-    //         //     setMessages('Invalid email or password.');
-    //         // } else if (response.status === 400 && data.errors) {
-    //         //     setMessages(data.errors.map(err => err.msg).join(', '));
-    //         // } else {
-    //         //     setMessages('An unexpected error occurred.');
-    //         // }
-    //     }
-    // } catch (error) {
-    //     // Handle network errors, JSON parsing errors, or other unexpected issues
-    //     console.error('Fetch or parsing error:', error);
-    //     setMessages('Network error or server unreachable. Please try again.');
-    // }
-        
+        //     // if (data.message){
+        //     //     setMessages(data.message)
+        //     //     // toast.error("login success!")
+        //     // }
+        //     if ( res.ok ) {
+        //         if (data.user){
+        //             setUser(data.user)
+        //             navigate('/feed')
+        //             toast.success(data.message)
+        //         }
+        //     } else {
+        //         console.error('Login failed:',data.message)
+        //         toast.error(data.message)
+        //     }
+        // } catch (error) {
+        //     // Handle network errors, JSON parsing errors, or other unexpected issues
+        //     console.error('Login failed:', error);
+        //     toast.error('Network error or server unreachable. Please try again.');
+        // }
     }
 
 
     return (
         <div>
             
-            <div className="min-h-125 flex flex-col pt-10">
-                <div className="mx-auto pt-5">
+            <div className="min-h-125 flex flex-col pt-10 px-2">
+                <div className="min-[340px]:mx-auto pt-5">
 
                     {/* <!-- Back Button --> */}
                     <Link to={"/"} className="btn btn-primary w-20">
@@ -93,7 +78,7 @@ const Login = () => {
                    {/* <AlertMessages messages={messages} /> */}
 
                     {/* <!-- Login Form --> */}
-                    <fieldset className="fieldset w-xs bg-base-200 border border-base-300 p-4 rounded-box">
+                    <fieldset className="fieldset w-full min-[340px]:w-xs sm:w-xs bg-base-200 border border-base-300 p-4 rounded-box">
                         <legend className="fieldset-legend">Login</legend>
                         <form onSubmit={handleSubmit}>
 
@@ -125,6 +110,11 @@ const Login = () => {
                             
                         </form>
                     </fieldset> 
+
+                        {/* Google Login */}
+                        {/* <a href="/auth/google" class="btn bg-white text-black border-[#e5e5e5] mx-auto w-full sm:w-xs mt-2"><svg aria-label="Google logo" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><g><path d="m0 0H512V512H0" fill="#fff"></path><path fill="#34a853" d="M153 292c30 82 118 95 171 60h62v48A192 192 0 0190 341"></path><path fill="#4285f4" d="m386 400a140 175 0 0053-179H260v74h102q-7 37-38 57"></path><path fill="#fbbc02" d="m90 341a208 200 0 010-171l63 49q-12 37 0 73"></path><path fill="#ea4335" d="m153 219c22-69 116-109 179-50l55-54c-78-75-230-72-297 55"></path></g></svg>
+                        Login with Google</a> */}
+
                        </div>
 
             </div>

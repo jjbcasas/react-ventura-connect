@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import AddPost from "../components/AddPost"
 import Spinner from "../components/Spinner"
-import { useOutletContext, useParams} from "react-router-dom"
+import { /*useOutletContext,*/ useParams} from "react-router-dom"
 import toast from 'react-hot-toast'
 import Avatar from "../components/Avatar"
 import Placeholder from "../components/Placeholder"
@@ -10,6 +10,7 @@ import FollowButton from "../components/FollowButton"
 import ProfilePost from "../components/ProfilePost"
 import ProfileRecommend from "../components/ProfileRecommend"
 import UnfollowButton from "../components/UnfollowButton"
+import { useAuth } from "../context/AuthContext"
 
 const Profile = () => {
     const [posts, setPosts] = useState([])
@@ -17,8 +18,9 @@ const Profile = () => {
     const [accountUser, setAccountUser] = useState({})
     // const [usersFriends, setUsersFriends] = useState([])
     const [loading, setLoading] = useState(true)
-    const { user, setUser, setMessages } = useOutletContext()
+    // const { user, setUser /*, setMessages*/ } = useOutletContext()
     const { id } = useParams()
+    const { user, setUser } = useAuth()
 
     useEffect( () => {
         setLoading(true)

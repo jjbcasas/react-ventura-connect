@@ -14,6 +14,7 @@ import Signup from './pages/Signup'
 import toast from 'react-hot-toast'
 import { useEffect, useState } from 'react'
 import ErrorPage from './components/ErrorPage'
+import { AuthProvider } from './context/AuthContext'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -30,32 +31,11 @@ const router = createBrowserRouter(
 )
 
 const App = () => {
-  // const [isAuthenticated, setisAuthenticated] = useState(false)
-
-  // const login = async(newLogin) => {
-  //   const res = await fetch('http://localhost:5137/login',{
-  //     method: 'POST',
-  //     headers: {
-
-  //     }
-  //   })
-  // }
-
-  // useEffect(() =>{
-  //   const fetchUser = async () => {
-  //     try {
-  //       const res = await fetch('http://localhost:5000/login')
-  //       const data = await res.json()
-  //       setisAuthenticated(data.isAuthenticated)
-  //     } catch (error) {
-  //         console.log('Error fetching data',error)
-  //     }
-  //   }
-  //   fetchUser()
-  // }, [])
 
   return (
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   )
 }
 

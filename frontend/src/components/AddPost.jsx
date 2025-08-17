@@ -50,7 +50,7 @@ const AddPost = ({width='w-full', classNameOne='mx-auto', addPost, divWidth = 'w
   return (
     <>
         <details>
-            <summary className="text-center">Add a post</summary>
+            <summary className="mx-auto text-center">Add a post</summary>
             <fieldset className={`fieldset ${width} bg-base-200 border border-base-300 p-4 rounded-box mx-auto`}>
                 <form onSubmit={handleSubmit} encType="multipart/form-data">
                     <div className="flex flex-wrap md:justify-center">

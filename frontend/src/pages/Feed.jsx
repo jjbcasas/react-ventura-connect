@@ -2,17 +2,19 @@ import { useState, useEffect, useRef } from "react"
 import AddPost from "../components/AddPost"
 import Post from '../components/Post'
 import Spinner from "../components/Spinner"
-import { useOutletContext, Link } from "react-router-dom"
+import { /*useOutletContext,*/ Link } from "react-router-dom"
 import ProfileRecommend from "../components/ProfileRecommend"
 import toast from "react-hot-toast"
+import { useAuth } from "../context/AuthContext"
 
 const Feed = () => {
     const [posts, setPosts] = useState([])
     const [allUsers, setAllUsers] = useState([])
     const [comments, setComments] = useState([])
     const [loading, setLoading] = useState(true)
-    const { user, setUser } = useOutletContext()
+    // const { user, setUser } = useOutletContext()
     const fileInputRef = useRef(null)
+    const { user, setUser } = useAuth()
 
     useEffect( () => {
         setLoading(true)
@@ -230,8 +232,8 @@ const Feed = () => {
     <section className="flex flex-wrap justify-evenly min-h-125">
             <div className="w-3/4 sm:w-2/3 pt-4">
                 
-                <div className="card bg-base-100 w-2/3 shadow-sm mb-4 mx-auto">
-                    <AddPost addPost={addPost} fileInputRef={fileInputRef} />
+                <div className="w-full md:w-3/4 mx-auto grow-1 px-2">
+                    <AddPost addPost={addPost} fileInputRef={fileInputRef} width='w-full grow-2' divWidth='w-full' />
                 </div>
                     { loading ? (
                         <Spinner loading={loading} />
@@ -248,9 +250,9 @@ const Feed = () => {
             </div>
 
             {/* <!-- Right Section/Div --> */}
-            <div className="w-1/4 sm:w-1/3 px-1">
+            <div className="w-1/4 sm:w-1/3 min-[340]:px-1">
                     {/* <Recommend /> */}
-                <h3 className="text-xs sm:text-base text-center pt-4"><strong>Recommended people</strong></h3>
+                <h3 className="text-[.6rem] sm:text-base text-center pt-4"><strong>Recommended people</strong></h3>
                 <div className="card w-full bg-base-96 card-xs shadow-sm">
                     <div className="card-body">
                         <ul className="flex flex-wrap justify-center">
