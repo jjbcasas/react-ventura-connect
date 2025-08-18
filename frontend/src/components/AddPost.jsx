@@ -23,10 +23,13 @@ const AddPost = ({width='w-full', classNameOne='mx-auto', addPost, divWidth = 'w
 
             const formData = new FormData(e.target)
             
-            if(!formData.get('file')){
-                console.log('No file selected')
-                toast.error('Please select an image file.')
-                return
+            // Correctly check if a file was selected by checking its size
+            const file = formData.get('file');
+
+            if (file.size === 0) {
+                console.log('No file selected');
+                toast.error('Please select an image file.');
+                return;
             }
             
             // to log each property of newFormData

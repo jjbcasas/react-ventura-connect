@@ -14,28 +14,13 @@ const Header = ({user /*, logout*/}) => {
     location.pathname === `/profile/${id}`
   const { logout } = useAuth()
   const navigate = useNavigate()
-
-  // const navigate = useNavigate()
   // const { setUser } = useOutletContext()
 
-    // const logout = async () => {
-    //   const res = await fetch('/api/logout')
-    //   const data = await res.json()
-
-    //   if ( res.status === 200 ) {
-    //     if ( data.message ) {
-    //       setUser(null)
-    //       navigate('/')
-    //       toast.success(data.message)
-    //     }
-    //   }
-    // }
     const handleClick = async () => {
       await logout()
       navigate('/')
     }
 
-    console.log(user)
   return (
     <header>
         <div className={`navbar bg-base-100 shadow-sm  w-full flex-1`}>
@@ -43,21 +28,23 @@ const Header = ({user /*, logout*/}) => {
                 <Link to={user ? '/feed' : '/' } className="btn btn-ghost text-xl">Ventura Connect</Link>
             </div>
 
-            { shouldShowHeaderContent && <div className="flex-none w-2/3 min-[450px]:w-1/2 text-right">
+            { shouldShowHeaderContent &&
+              <div className="flex-none w-2/3 min-[450px]:w-1/2 text-right">
 
-              { user?.profileImage ? 
-              <Avatar classNameTwo='mx-auto' user={user}/>
-              : <Placeholder classNameTwo='mx-auto' user={user} /> }
-                <ul className="menu menu-horizontal p-0 min[350px]:px-1">
-                  <li>{
-                        id === user?._id ?
-                        <Link to={`/feed`}>Feed</Link>
-                        :
-                        <Link to={`/profile/${user?._id}`}>Profile</Link>
-                      }
-                  </li>
-                  <li><button onClick={()=> handleClick(/*setUser*/)}>Logout</button></li>
-                </ul>
+                { user?.profileImage ? 
+                <Avatar classNameTwo='mx-auto' user={user}/>
+                : <Placeholder classNameTwo='mx-auto' user={user} /> }
+                  <ul className="menu menu-horizontal p-0 min[350px]:px-1">
+                    <li>{
+                          id === user?._id ?
+                          <Link to={`/feed`}>Feed</Link>
+                          :
+                          <Link to={`/profile/${user?._id}`}>Profile</Link>
+                        }
+                    </li>
+                    <li><button onClick={handleClick}>Logout</button></li>
+                  </ul>
+
               </div>}
         </div>
     </header>

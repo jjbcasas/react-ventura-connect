@@ -43,9 +43,6 @@ const Profile = () => {
                     console.error('Error fetching data:', data.message)
                     toast.error(data.message)
                 }
-
-                console.log(data)
-                console.log(user)
             } catch (error) {
                 console.error('Error fetching data:',error)
                 toast.error('Could not connect to the server')
@@ -66,9 +63,6 @@ const Profile = () => {
             })
             const data = await res.json()
 
-            // if (data.message){
-            //     setMessages(data.message)
-            // }
             if ( res.ok ) {
                 if (data.post) {
                     setPosts([data.post, ...posts])
@@ -162,7 +156,7 @@ const Profile = () => {
 
     const unlikePost = async (postId) => {
         try {
-            const res = await fetch(`/api/profile/minusLike/${postId}`,{
+            const res = await fetch(`/api/profile/minusLikePost/${postId}`,{
                 method: 'PUT',
                 credentials: 'include',
             })

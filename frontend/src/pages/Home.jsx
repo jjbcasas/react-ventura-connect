@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 const Home = () => {
   return (
     <div>
-        {/* <Header data='text-center' /> */}
         <div className="hero bg-base-200 min-h-125">
             <div className="hero-content text-center">
                 <div className="max-w-md">
@@ -16,7 +15,6 @@ const Home = () => {
                 </div>
             </div>
         </div>
-        {/* <Footer /> */}
     </div>
   )
 }

@@ -7,7 +7,7 @@ import DeleteButton from './DeleteButton'
 
 const ProfilePost = ({ user, post, accountUser, comments, likePost, unlikePost, deletePost, addComment }) => {    
   return (
-    <li className="card bg-base-100 shadow-sm w-full mb-4" /* id="<%= posts[i]._id%>" */>
+    <li className="card bg-base-100 shadow-sm w-full mb-4">
         <figure>
             <Link to={`/post/${post?._id}`}>
                 <img src={post?.image}/>

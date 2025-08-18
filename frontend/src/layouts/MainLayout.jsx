@@ -1,11 +1,7 @@
 import { Outlet, useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
-import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
-// import AlertMessages from '../components/AlertMessages'
-import toast from 'react-hot-toast'
-
 
 const MainLayout = () => {
   // const [user, setUser] = useState()
@@ -48,9 +44,7 @@ const MainLayout = () => {
 
   return (
     <>
-      <Header user={user} /*logout={logout}*//>
-      {/* <h1>Hi, {user?.email}</h1> */}
-      {/* <AlertMessages messages={messages} /> */}
+      <Header user={user} />
       <Outlet /*context={{ user, setUser , messages, setMessages }}*/ />
       <Footer />
     </>

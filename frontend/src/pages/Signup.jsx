@@ -1,14 +1,10 @@
-// import Input from '../components/Input'
-// import Submit from '../components/Submit'
 import { Link, /*useOutletContext,*/ useNavigate } from 'react-router-dom'
 import { FaArrowLeft } from 'react-icons/fa'
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
-// import AlertMessages from '../components/AlertMessages'
 
 const Signup = () => {
     const navigate = useNavigate()
-    // const { setUser, /*setMessages*/ } = useOutletContext()
     const [ userName, setUserName] = useState('')
     const [ email, setEmail] = useState('')
     const [ password, setPassword] = useState('')
@@ -34,22 +30,17 @@ const Signup = () => {
 
     return (
         <div>
-            {/* <Header data='text-center' /> */}
-
-            {/* <!-- Main Section --> */}
+            {/* Main Section  */}
             <main className="container min-h-125 p-2 mx-auto">
                 <div className="row justify-content-center">
                     <section className="col-6 mt-5 w-full flex">
                         <section className="mx-auto">
 
-                            {/* <!-- Back Button --> */}
+                            {/* Back Button */}
                             <Link to="/" className="btn btn-primary">
                                 <FaArrowLeft />
                                 Back
                             </Link>
-
-                            {/* Flash Message htmlFor errors */}
-                            {/* <AlertMessages messages={messages} /> */}
 
                             {/* Sign Up Form */}
                             <fieldset className="fieldset w-full min-[340px]:w-xs bg-base-200 border border-base-300 p-4 mt-2 rounded-box">

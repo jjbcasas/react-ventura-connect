@@ -35,9 +35,6 @@ const Feed = () => {
                     console.error('Error fetching data:', data.message)
                     toast.error(data.message)
                 }
-
-                console.log(data)
-                console.log(data.allUsers)
             } catch (error) {
                 console.log('Error fetching data:',error)
                 toast.error('Could not connect to the server')
@@ -58,9 +55,6 @@ const Feed = () => {
             })
             const data = await res.json()
 
-            // if (data.message){
-            //     setMessages(data.message)
-            // }
             if ( res.ok ) {
                 if (data.post) {
                     setPosts([data.post, ...posts])
@@ -68,11 +62,12 @@ const Feed = () => {
                 }
             } else {
                 console.error('Error adding a post', error)
-                toast.error('Could not connect to the server')
+                toast.error(data.message)
             }
             
         } catch (error) {
-            console.log(error)
+            console.error('Error adding a post:', error)
+            toast.error('Could not connect to the server')
         }
     }
 

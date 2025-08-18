@@ -15,8 +15,6 @@ const Login = () => {
     // const { setUser /*, setMessages*/ } = useOutletContext()
     const { login } = useAuth()
 
-    // console.log(user)
-
     const handleSubmit = async (e) => {
         e.preventDefault()
 
@@ -29,39 +27,7 @@ const Login = () => {
         if ( result.success ) {
             navigate('/feed')
         }
-        // try{
-        //     const res = await fetch('/api/login', {
-        //         method: 'POST',
-        //         headers: {
-        //             'Content-Type': 'application/json'
-        //         },
-        //         body: JSON.stringify(newLogin),
-        //         credentials: 'include'
-        //     })
-        //     const data = await res.json()
-        //     console.log(data)
-
-        //     // if (data.message){
-        //     //     setMessages(data.message)
-        //     //     // toast.error("login success!")
-        //     // }
-        //     if ( res.ok ) {
-        //         if (data.user){
-        //             setUser(data.user)
-        //             navigate('/feed')
-        //             toast.success(data.message)
-        //         }
-        //     } else {
-        //         console.error('Login failed:',data.message)
-        //         toast.error(data.message)
-        //     }
-        // } catch (error) {
-        //     // Handle network errors, JSON parsing errors, or other unexpected issues
-        //     console.error('Login failed:', error);
-        //     toast.error('Network error or server unreachable. Please try again.');
-        // }
     }
-
 
     return (
         <div>
@@ -74,8 +40,6 @@ const Login = () => {
                         <FaArrowLeft />
                         Back 
                     </Link>
-
-                   {/* <AlertMessages messages={messages} /> */}
 
                     {/* <!-- Login Form --> */}
                     <fieldset className="fieldset w-full min-[340px]:w-xs sm:w-xs bg-base-200 border border-base-300 p-4 rounded-box">

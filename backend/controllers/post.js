@@ -192,15 +192,16 @@ export const deletePost = async ( req, res ) => {
         if ( !mongoose.Types.ObjectId.isValid(id)){
             return res.status(404).json({message: 'Invalid Post Id!'})
         }
-        // Find a specific post and delete
+
         let post = await Post.findById({ _id: id })
 
         await cloudinary.uploader.destroy(post.cloudinaryId)
 
+        // Find a specific post and delete
         await Post.deleteOne({ _id: id })
 
         console.log('Deleted Post!')
-        res.status(200).json({message: 'Post Deleted!'})
+        res.status(200).json({message: 'Post Deleted!', post})
     } catch (error) {
         console.error('Error in Deleting Post:', error.message)
         res.status(500).json({message: 'Server Error!' })

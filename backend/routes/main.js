@@ -1,7 +1,6 @@
 import express from 'express'
 const router = express.Router()
 import { getUser, postLogin, logout, postSignup} from '../controllers/auth.js'
-import passport from 'passport'
 
 // Auth Routes
 router.get('/user', getUser)

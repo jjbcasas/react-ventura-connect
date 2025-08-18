@@ -29,12 +29,12 @@ export const AuthProvider = ({ children }) => {
             } else {
                 setUser(null);
                 setIsAuthenticated(false);
-                // toast.error(data.message || 'You are not logged in.');
+                toast.error(data.message || 'You are not logged in.');
             }
         } catch (error) {
-            console.error('Error checking auth status:', error);
             setUser(null);
             setIsAuthenticated(false);
+            console.error('Error checking auth status:', error);
             toast.error('Failed to connect to authentication server.');
         } finally {
             setIsLoading(false) // Finished loading
@@ -84,7 +84,7 @@ export const AuthProvider = ({ children }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify( /*email, password*/ loginForm),
+        body: JSON.stringify(loginForm),
         credentials: 'include'
       });
       const data = await res.json();
@@ -97,11 +97,15 @@ export const AuthProvider = ({ children }) => {
         return { success: true }
       } else {
         // Handle login errors (e.g., incorrect credentials)
-        toast.error(data.message || 'Login failed. Please try again.');
-        console.error('Login failed:',data.message)
-        return { success: false }
+          setUser(null);
+          setIsAuthenticated(false);
+          toast.error(data.message || 'Login failed. Please try again.');
+          console.error('Login failed:',data.message)
+          return { success: false }
       }
     } catch (error) {
+      setUser(null);
+      setIsAuthenticated(false);
       console.error('Error during login:', error);
       toast.error('Network error during login. Server might be down.');
       return { success: false }
@@ -119,8 +123,6 @@ export const AuthProvider = ({ children }) => {
       const data = await res.json()
 
       if ( res.ok ) {
-        setUser(null);
-        setIsAuthenticated(false);
         // navigate('/'); // Redirect to login after logout
         toast.success(data.message || 'Logged out successfully!');
       } else {
@@ -132,18 +134,16 @@ export const AuthProvider = ({ children }) => {
       toast.error('Network error during logout.')
       // Even if error, typically log out on client side
     } finally {
+      setUser(null);
+      setIsAuthenticated(false);
       setIsLoading(false)
     }
   };
-
 
   // Run checkAuthStatus once on component mount
   useEffect(() => {
     checkAuthStatus();
   }, []);
-
-//   const login = async (email, password) => { /* ... (as discussed) ... */ };
-//   const logout = async () => { /* ... (as discussed) ... */ };
 
   const authContextValue = useMemo(() => ({
     user,

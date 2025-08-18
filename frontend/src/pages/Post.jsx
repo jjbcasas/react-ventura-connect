@@ -13,15 +13,14 @@ import UnfollowButton from "../components/UnfollowButton"
 import { useAuth } from "../context/AuthContext"
 
 const Post = () => {
-  const [post, setPost] = useState({})
-  const [comments, setComments] = useState([])
-  const [accountUser, setAccountUser] = useState({})
-  // const [usersFriends, setUsersFriends] = useState([])
-  const [loading, setLoading] = useState(true)
-//   const { user, setUser, /*setMessages*/ } = useOutletContext()
-  const { id } = useParams()
-  const navigate = useNavigate()
-  const { user, setUser } = useAuth()
+    const [post, setPost] = useState({})
+    const [comments, setComments] = useState([])
+    const [accountUser, setAccountUser] = useState({})
+    const [loading, setLoading] = useState(true)
+    //   const { user, setUser, /*setMessages*/ } = useOutletContext()
+    const { id } = useParams()
+    const navigate = useNavigate()
+    const { user, setUser } = useAuth()
 
     useEffect( () => {
         setLoading(true)
@@ -37,7 +36,6 @@ const Post = () => {
                         setPost(data.post)
                         setComments(data.comments)
                         setAccountUser(data.accountUser)
-                        // setUsersFriends(data.usersFriends)
                     }
                 } else {
                     console.error('Error fetching data:', data.message)
@@ -55,34 +53,6 @@ const Post = () => {
         }
         fetchData()
     }, [])
-
-    // const addPost = async (formData) => {
-    //     try {
-    //         const res = await fetch('/api/profile/createPost', {
-    //             method: 'POST',
-    //             credentials: 'include',
-    //             body: formData
-    //         })
-    //         const data = await res.json()
-
-    //         // if (data.message){
-    //         //     setMessages(data.message)
-    //         // }
-    //         if ( res.ok ) {
-    //             if (data.post) {
-    //                 setPosts([data.post, ...posts])
-    //                 toast.success(data.message)
-    //             }
-    //         } else {
-    //             console.error('Error adding a post:', data.message)
-    //             toast.error(data.message)
-    //         }
-            
-    //     } catch (error) {
-    //         console.error('Error adding a post:', error)
-    //         toast.error('Could not connect to the server')
-    //     }
-    // }
 
     const followUser = async (userId) => {
         try {
@@ -197,7 +167,7 @@ const Post = () => {
             
             if ( res.status === 200 ) {
                 setPost({})
-                navigate(`/profile/${post.user}`)
+                navigate(`/profile/${data.post.user}`)
                 toast.success(data.message || 'Post deleted successfully!' )
             } else {
                 console.error('Error deleting post:', data.message || 'Unknown error')
