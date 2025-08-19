@@ -29,13 +29,13 @@ export const AuthProvider = ({ children }) => {
             } else {
                 setUser(null);
                 setIsAuthenticated(false);
-                toast.error(data.message || 'You are not logged in.');
+                // toast.error(data.message || 'You are not logged in.');
             }
         } catch (error) {
             setUser(null);
             setIsAuthenticated(false);
             console.error('Error checking auth status:', error);
-            toast.error('Failed to connect to authentication server.');
+            // toast.error('Failed to connect to authentication server.');
         } finally {
             setIsLoading(false) // Finished loading
         }

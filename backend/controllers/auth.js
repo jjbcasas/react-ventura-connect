@@ -149,7 +149,6 @@ import User from '../models/User.js'
   }
 
   export const googleCallback = async ( req, res) => {
-    
     // Successful authentication, redirect home.
     res.redirect('/feed');
   }

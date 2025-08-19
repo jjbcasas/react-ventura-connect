@@ -2,7 +2,7 @@ import { Link, useParams, /*useNavigate, useOutletContext*/ } from 'react-router
 import { useLocation, useNavigate } from 'react-router-dom'
 import Placeholder from './Placeholder'
 import Avatar from './Avatar'
-import { useAuth } from '../context/AuthContext'
+// import { useAuth } from '../context/AuthContext'
 // import toast from 'react-hot-toast'
 
 const Header = ({user /*, logout*/}) => {
@@ -12,14 +12,14 @@ const Header = ({user /*, logout*/}) => {
     location.pathname === '/feed' || 
     location.pathname === `/post/${id}` || 
     location.pathname === `/profile/${id}`
-  const { logout } = useAuth()
-  const navigate = useNavigate()
+  // const { logout } = useAuth()
+  // const navigate = useNavigate()
   // const { setUser } = useOutletContext()
 
-    const handleClick = async () => {
-      await logout()
-      navigate('/')
-    }
+    // const handleClick = async () => {
+    //   await logout()
+    //   navigate('/')
+    // }
 
   return (
     <header>
@@ -42,7 +42,10 @@ const Header = ({user /*, logout*/}) => {
                           <Link to={`/profile/${user?._id}`}>Profile</Link>
                         }
                     </li>
-                    <li><button onClick={handleClick}>Logout</button></li>
+                    <li>
+                      <Link to={`/logout`}>Logout</Link>
+                      {/* <button onClick={handleClick}>Logout</button> */}
+                    </li>
                   </ul>
 
               </div>}

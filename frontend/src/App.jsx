@@ -15,6 +15,7 @@ import ErrorPage from './components/ErrorPage'
 import { AuthProvider } from './context/AuthContext'
 import PublicRoute from './components/PublicRoute'
 import ProtectedRoute from './components/ProtectedRoute'
+import Logout from './components/Logout'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -24,6 +25,7 @@ const router = createBrowserRouter(
         <Route path='/login' element={<Login />}/>
         <Route path='/signup' element={<Signup />}/>
       </Route>
+        <Route path='/logout' element={<Logout />}/>
       <Route element={<ProtectedRoute />}>
         <Route path='/feed' element={<Feed />}/>
         <Route path='/post/:id' element={<Post />}/>

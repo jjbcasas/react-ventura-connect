@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext'
 const MainLayout = () => {
   // const [user, setUser] = useState()
   // const [messages, setMessages] = useState({})
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
   const { user } = useAuth()
   
   // useEffect(()=>{

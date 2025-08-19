@@ -36,8 +36,6 @@ const Profile = () => {
                         setPosts(data.posts)
                         setComments(data.comments)
                         setAccountUser(data.accountUser)
-                        // setUsersFriends(data.usersFriends)
-                        console.log(data.posts)
                     }
                 } else {
                     console.error('Error fetching data:', data.message)
