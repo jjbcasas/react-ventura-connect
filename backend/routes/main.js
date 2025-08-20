@@ -3,7 +3,7 @@ const router = express.Router()
 import { getUser, postLogin, logout, postSignup, googleCallback} from '../controllers/auth.js'
 import passport from 'passport'
 import dotenv from 'dotenv'
-dotenv.config({ path: './backend/config/.env'})
+dotenv.config({ path: '../config/.env'})
 
 // Auth Routes
 router.get('/user', getUser)
