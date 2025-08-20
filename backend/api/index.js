@@ -27,7 +27,7 @@ import profileRoutes from '../routes/profile.js'
 import postRoutes from '../routes/post.js'
 
 // use .env file in config folder
-dotenv.config({ path: '../config/.env'})
+dotenv.config({ path: './backend/config/.env'})
 
 // Passport config
 passportConfig(passport)
