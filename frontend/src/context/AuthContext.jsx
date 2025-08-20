@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom'
+// import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast';
 
 const AuthContext = createContext(null);
@@ -111,6 +111,35 @@ export const AuthProvider = ({ children }) => {
       return { success: false }
     }
   };
+
+  // Function to handle user google login
+  // const googleLogin = async (/*email, password, loginForm*/) => {
+  //   try {
+  //     const res = await fetch(`/api/auth/google`);
+  //     const data = await res.json();
+
+  //     if (res.ok && data.isAuthenticated && data.user) {
+  //       setUser(data.user);
+  //       setIsAuthenticated(true);
+  //       // navigate('/feed'); // Redirect to feed on successful login
+  //       toast.success(data.message || 'Logged in successfully!');
+  //       return { success: true }
+  //     } else {
+  //       // Handle login errors (e.g., incorrect credentials)
+  //         setUser(null);
+  //         setIsAuthenticated(false);
+  //         toast.error(data.message || 'Login failed. Please try again.');
+  //         console.error('Login failed:',data.message)
+  //         return { success: false }
+  //     }
+  //   } catch (error) {
+  //     setUser(null);
+  //     setIsAuthenticated(false);
+  //     console.error('Error during login:', error);
+  //     toast.error('Network error during login. Server might be down.');
+  //     return { success: false }
+  //   }
+  // };
 
   // Function to handle user logout
   const logout = async () => {

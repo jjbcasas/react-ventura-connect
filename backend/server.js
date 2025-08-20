@@ -19,6 +19,7 @@ import cors from 'cors'
 // requires dotenv for us to use environment variables
 import dotenv from 'dotenv'
 import passportConfig from './config/passport.js'
+import passportGoogleConfig from './config/passport-google.js'
 import { connectDB } from './config/database.js'
 import feedRoutes from './routes/feed.js'
 import mainRoutes from './routes/main.js'
@@ -32,7 +33,7 @@ dotenv.config({ path: './backend/config/.env'})
 passportConfig(passport)
 
 // Passport google-oauth20 config
-// require('./config/passport-google')(passport)
+passportGoogleConfig(passport)
 
 // connect to the Database
 connectDB()

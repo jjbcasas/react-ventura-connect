@@ -1,6 +1,8 @@
 import passport from 'passport'
 import validator from 'validator'
 import User from '../models/User.js'
+import dotenv from 'dotenv'
+dotenv.config({ path: './backend/config/.env'})
 
     // This endpoint would primarily be used to check if a user is already authenticated
     // when the React app loads or navigates to a protected route.
@@ -11,7 +13,8 @@ import User from '../models/User.js'
             // Send back the user data to the client.
             // The client-side React app will then use this data to update its auth state
             // and conditionally redirect to '/feed' or show the logged-in UI.
-            console.log(req.user)
+            // console.log(req.user)
+            console.log('User fetched!')
             return res.status(200).json({
                 isAuthenticated: true,
                 user: {
@@ -55,8 +58,9 @@ import User from '../models/User.js'
       }
       req.logIn(user, (err) => {
         if (err) { return next(err) }
+        console.log('Successful Login')
         res.status(200).json({ user, isAuthenticated: true, message: 'Success! You are logged in.' })
-        console.log(user)
+        // console.log(user)
       })
     })(req, res, next)
   }
@@ -150,5 +154,5 @@ import User from '../models/User.js'
 
   export const googleCallback = async ( req, res) => {
     // Successful authentication, redirect home.
-    res.redirect('/feed');
+    res.redirect(`${process.env.FRONTEND_URL}/feed`);
   }

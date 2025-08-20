@@ -13,8 +13,8 @@ import Profile from './pages/Profile'
 import Signup from './pages/Signup'
 import ErrorPage from './components/ErrorPage'
 import { AuthProvider } from './context/AuthContext'
-import PublicRoute from './components/PublicRoute'
-import ProtectedRoute from './components/ProtectedRoute'
+import PublicRoute from './utils/PublicRoute'
+import ProtectedRoute from './utils/ProtectedRoute'
 import Logout from './components/Logout'
 
 const router = createBrowserRouter(

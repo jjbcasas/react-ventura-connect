@@ -35,8 +35,30 @@ const Feed = () => {
                     console.error('Error fetching data:', data.message)
                     toast.error(data.message)
                 }
+                    // for Axios
+                    // try {
+                        // The equivalent Axios call
+                        // const response = await axios.get('/api/feed', {
+                        //         withCredentials: true // Equivalent to 'credentials: "include"'
+                        //});
+            
+                    //     const data = response.data; // Axios automatically parses JSON
+            
+                    //     setPosts(data.posts);
+                    //     setAllUsers(data.allUsers);
+                    //     setComments(data.comments);
+            
+                    // } catch (error) {
+                        // console.error('Error fetching data:', error);
+                        // Axios handles non-2xx status codes as errors, so you can check error.response
+                        // if (error.response) {
+                        //     toast.error(error.response.data.message || 'Error fetching data');
+                        // } else {
+                        //     toast.error('Could not connect to the server');
+                        // }
+                    //  } finally {
             } catch (error) {
-                console.log('Error fetching data:',error)
+                console.error('Error fetching data:',error)
                 toast.error('Could not connect to the server')
             } finally {
                 setLoading(false)

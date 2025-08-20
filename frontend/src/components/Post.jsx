@@ -35,7 +35,7 @@ const Post = ({ user, post ,comments, likePost, unlikePost, addComment, deletePo
                 <div className="mt-3 mr-2">
                     {/* <!-- for follow and unfollow button --> */}
                     {/* <!-- show the follow/unfollow button when its not the users own posts --> */}
-                        { post?.user?.followerId?.includes(user?._id) ? (
+                        { user?.followingId?.includes(post?.user?._id) ? (
                             <UnfollowButton userId={post?.user?._id} unfollowUser={unfollowUser} />
                         ) : (
                             user?._id !== post?.user?._id &&
