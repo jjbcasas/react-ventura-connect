@@ -29,7 +29,7 @@ const Login = () => {
 
     const handleClick = async(e) => {
         try {
-            window.location.href = '/api/auth/google'
+            window.location.href = '/auth/google'
         } catch (error) {
             console.error(error)
         }
