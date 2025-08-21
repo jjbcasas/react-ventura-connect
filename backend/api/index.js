@@ -86,5 +86,3 @@ app.use('/post', postRoutes)
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}, you better catch it!`)
 })
-
-export default app
