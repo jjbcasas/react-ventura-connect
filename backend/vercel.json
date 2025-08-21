@@ -14,7 +14,7 @@
      "routes": [
         {
             "source": "/(.*)",
-            "destination": "https://react-ventura-connect-backend.vercel.app/api/$1"
+            "destination": "https://react-ventura-connect-backend.vercel.app/$1"
         }
     ]
 }
