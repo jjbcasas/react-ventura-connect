@@ -29,7 +29,7 @@ const Login = () => {
 
     const handleClick = async(e) => {
         try {
-            window.location.href = '/auth/google'
+            window.location.href = `${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/auth/google`
         } catch (error) {
             console.error(error)
         }
