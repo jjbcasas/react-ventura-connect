@@ -14,7 +14,7 @@
      "routes": [
         {
             "source": "/(.*)",
-            "destination": "/backend/api"
+            "destination": "/api"
         }
     ]
 }
