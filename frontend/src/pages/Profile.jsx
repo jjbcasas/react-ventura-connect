@@ -26,7 +26,7 @@ const Profile = () => {
         setLoading(true)
         const fetchData = async () => {
             try {
-                const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/profile/${id}`, {
+                const res = await fetch(`/api/profile/${id}`, {
                   credentials: 'include'
               })
                 const data = await res.json()
@@ -54,7 +54,7 @@ const Profile = () => {
 
     const addPost = async (formData) => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/profile/createPost`, {
+            const res = await fetch('/api/profile/createPost', {
                 method: 'POST',
                 credentials: 'include',
                 body: formData
@@ -79,7 +79,7 @@ const Profile = () => {
 
     const followUser = async (userId) => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/profile/followUser/${userId}`,{
+            const res = await fetch(`/api/profile/followUser/${userId}`,{
                 method: 'PUT',
                 credentials: 'include',
             })
@@ -102,7 +102,7 @@ const Profile = () => {
 
     const unfollowUser = async (userId) => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/profile/unfollowUser/${userId}`,{
+            const res = await fetch(`/api/profile/unfollowUser/${userId}`,{
                 method: 'PUT',
                 credentials: 'include',
             })
@@ -125,7 +125,7 @@ const Profile = () => {
 
     const likePost = async (postId) => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/profile/likePost/${postId}`,{
+            const res = await fetch(`/api/profile/likePost/${postId}`,{
                 method: 'PUT',
                 credentials: 'include',
             })
@@ -154,7 +154,7 @@ const Profile = () => {
 
     const unlikePost = async (postId) => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/profile/minusLikePost/${postId}`,{
+            const res = await fetch(`/api/profile/minusLikePost/${postId}`,{
                 method: 'PUT',
                 credentials: 'include',
             })
@@ -183,7 +183,7 @@ const Profile = () => {
 
     const deletePost = async (postId) => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/profile/deletePost/${postId}`, {
+            const res = await fetch(`/api/profile/deletePost/${postId}`, {
                 method: 'DELETE',
                 credentials: 'include',
             })
@@ -205,7 +205,7 @@ const Profile = () => {
 
     const addComment = async(comment, postId) => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/profile/comments/${postId}`,{
+            const res = await fetch(`/api/profile/comments/${postId}`,{
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -233,7 +233,7 @@ const Profile = () => {
 
     const uploadPhoto = async (formData) => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/profile/uploadProfilePhoto`, {
+            const res = await fetch('/api/profile/uploadProfilePhoto', {
                 method: 'PUT',
                 credentials: 'include',
                 body: formData
@@ -258,7 +258,7 @@ const Profile = () => {
 
     const changePhoto = async (formData) => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/profile/changeProfilePhoto`, {
+            const res = await fetch('/api/profile/changeProfilePhoto', {
                 method: 'PUT',
                 credentials: 'include',
                 body: formData
