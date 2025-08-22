@@ -52,7 +52,7 @@ app.use(logger('dev'))
 // cors middleware
 app.use(
     cors({
-        origin: `${process.env.FRONTEND_URL}`,
+        origin: process.env.FRONTEND_URL,
         credentials: true // If you're sending cookies/sessions
     })
 )
