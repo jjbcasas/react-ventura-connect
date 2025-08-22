@@ -2,6 +2,7 @@ import passport from 'passport'
 import validator from 'validator'
 import User from '../models/User.js'
 import dotenv from 'dotenv'
+import path from 'path'
 dotenv.config({ path: './backend/config/.envs'})
 
     // This endpoint would primarily be used to check if a user is already authenticated

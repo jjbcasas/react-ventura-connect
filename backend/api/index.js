@@ -25,6 +25,7 @@ import feedRoutes from '../routes/feed.js'
 import mainRoutes from '../routes/main.js'
 import profileRoutes from '../routes/profile.js'
 import postRoutes from '../routes/post.js'
+import path from 'path'
 
 // use .env file in config folder
 dotenv.config({ path: './backend/config/.env'})
