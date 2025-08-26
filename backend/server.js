@@ -25,6 +25,7 @@ import feedRoutes from './routes/feed.js'
 import mainRoutes from './routes/main.js'
 import profileRoutes from './routes/profile.js'
 import postRoutes from './routes/post.js'
+import path from 'path'
 
 // use .env file in config folder
 dotenv.config({ path: './backend/config/.env'})
@@ -51,7 +52,7 @@ app.use(logger('dev'))
 // cors middleware
 app.use(
     cors({
-        origin: 'http://localhost:5173',
+        origin: process.env.FRONTEND_URL,
         credentials: true // If you're sending cookies/sessions
     })
 )
