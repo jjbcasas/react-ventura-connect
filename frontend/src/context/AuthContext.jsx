@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
     const checkAuthStatus = async () => {
         try {
             setIsLoading(true); // Start loading
-            const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/user`, {
+            const res = await fetch(`/user`, {
               method: 'GET',
               credentials: 'include'
             });
@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }) => {
     // Function to handle user signup
     const signup = async (createUser) => {
       try {
-          const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/signup`, { // Assuming /signup is your backend route
+          const res = await fetch(`/signup`, { // Assuming /signup is your backend route
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json'
@@ -79,7 +79,7 @@ export const AuthProvider = ({ children }) => {
     // Function to handle user login
   const login = async (/*email, password*/loginForm) => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/login`, {
+      const res = await fetch(`/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -145,7 +145,7 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     setIsLoading(true)
     try {
-      const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/logout`, {
+      const res = await fetch(`/logout`, {
         method: 'POST', // Logout is typically a POST request
         credentials: 'include'
       });
