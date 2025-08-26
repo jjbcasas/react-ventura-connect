@@ -1,15 +1,15 @@
 {
   "rewrites": [
     {
-      "source": "/(.*)",
+      "src": "/(.*)",
       "destination": "backend/server.js"
     },
     {
-      "source": "/(.*\\.[^/]+)",
+      "src": "/(.*\\.[^/]+)",
       "destination": "dist/$1"
     },
     {
-      "source": "/(.*)",
+      "src": "/(.*)",
       "destination": "dist/index.html"
     }
   ]
