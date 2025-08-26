@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "src": "/(.*)",
-      "destination": "backend/server.js"
+      "destination": "server.js"
     },
     {
       "src": "/(.*\\.[^/]+)",
