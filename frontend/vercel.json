@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "https://ventura-connect.onrender.com/:match*"
+      "destination": "https://ventura-connect.onrender.com/$1"
     },
     {
       "source": "/(.*)",
