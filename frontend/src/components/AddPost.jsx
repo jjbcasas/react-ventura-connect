@@ -81,7 +81,7 @@ const AddPost = ({width='w-full', classNameOne='mx-auto', addPost, divWidth = 'w
                                 value={caption}
                                 onChange={(e) => setCaption(e.target.value)}/>
                         </div>
-                        <div className={`md:${divWidth} w-2/3`}>
+                        <div className={`w-2/3`}>
                             <label 
                                 htmlFor="imageUpload" className="fieldset-legend">
                                 Image
@@ -93,7 +93,7 @@ const AddPost = ({width='w-full', classNameOne='mx-auto', addPost, divWidth = 'w
                                 // required
                                 ref={ fileInputRef} />
                         </div>
-                        <div className="w-1/3 pt-7 md:pt-4 flex justify-end">
+                        <div className="w-1/3 pt-7 flex justify-end">
                             <button type="submit" className="btn btn-neutral">Post</button>
                         </div>
                     </div>
