@@ -5,7 +5,7 @@ import upload  from '../middleware/multer.js'
 import { ensureAuth } from '../middleware/auth.js'
 
 // Feed Routes
-router.get('/', getFeed)
+router.get('/', ensureAuth, getFeed)
 router.post('/createPost', upload.single('file'), createPost)
 router.put('/likePost/:id', likePost)
 router.put('/minusLike/:id', minusLike)
