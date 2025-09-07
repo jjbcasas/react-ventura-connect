@@ -3,7 +3,7 @@ import validator from 'validator'
 import User from '../models/User.js'
 import dotenv from 'dotenv'
 import path from 'path'
-dotenv.config({ path: './backend/config/.envs'})
+dotenv.config({ path: './backend/config/.env'})
 
     // This endpoint would primarily be used to check if a user is already authenticated
     // when the React app loads or navigates to a protected route.
