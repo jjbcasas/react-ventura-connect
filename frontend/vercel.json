@@ -1,8 +1,40 @@
 {
   "rewrites": [
     {
-      "source": "/(.*)",
-      "destination": "https://ventura-connect.onrender.com/$1"
+      "source": "/user",
+      "destination": "https://ventura-connect.onrender.com/user"
+    },
+    {
+      "source": "/login",
+      "destination": "https://ventura-connect.onrender.com/login"
+    },
+    {
+      "source": "/logout",
+      "destination": "https://ventura-connect.onrender.com/logout"
+    },
+    {
+      "source": "/signup",
+      "destination": "https://ventura-connect.onrender.com/signup"
+    },
+    {
+      "source": "/auth/google",
+      "destination": "https://ventura-connect.onrender.com/auth/google"
+    },
+    {
+      "source": "/auth/google/callback",
+      "destination": "https://ventura-connect.onrender.com/auth/google/callback"
+    },
+    {
+      "source": "/feed",
+      "destination": "https://ventura-connect.onrender.com/feed"
+    },
+    {
+      "source": "/profile",
+      "destination": "https://ventura-connect.onrender.com/profile"
+    },
+    {
+      "source": "/post",
+      "destination": "https://ventura-connect.onrender.com/post"
     },
     {
       "source": "/(.*)",
