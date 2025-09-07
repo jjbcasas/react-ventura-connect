@@ -50,7 +50,7 @@ app.use(express.json())
 app.use(logger('dev'))
 
 const allowedOrigins = [
-    'http://localhost:5137',
+    'http://localhost:5173',
     process.env.FRONTEND_URL
 ]
 
