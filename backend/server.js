@@ -27,6 +27,8 @@ import profileRoutes from './routes/profile.js'
 import postRoutes from './routes/post.js'
 import path from 'path'
 
+app.set('trust proxy', 1)
+
 // use .env file in config folder
 dotenv.config({ path: './backend/config/.env'})
 
