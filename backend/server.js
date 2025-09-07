@@ -49,10 +49,15 @@ app.use(express.json())
 // logging
 app.use(logger('dev'))
 
+const allowedOrigins = [
+    'http:localhost:5137',
+    process.env.FRONTEND_URL
+]
+
 // cors middleware
 app.use(
     cors({
-        origin: process.env.FRONTEND_URL,
+        origin: allowedOrigins,
         credentials: true // If you're sending cookies/sessions
     })
 )
