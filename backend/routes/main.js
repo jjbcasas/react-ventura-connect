@@ -4,10 +4,11 @@ import { getUser, postLogin, logout, postSignup, googleCallback} from '../contro
 import passport from 'passport'
 import dotenv from 'dotenv'
 import path from 'path'
+import { ensureAuth } from '../middleware/auth.js'
 dotenv.config({ path: './backend/config/.env'})
 
 // Auth Routes
-router.get('/user', getUser)
+router.get('/user', ensureAuth, getUser)
 // router.get('/login', getUser)
 router.post('/login', postLogin)
 router.post('/logout', logout)
