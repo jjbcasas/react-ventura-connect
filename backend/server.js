@@ -70,7 +70,12 @@ app.use(
         saveUninitialized: false,
         store: MongoStore.create({
             mongoUrl: process.env.DB_STRING
-        })
+        }),
+        cookie: {
+            sameSite: 'none',
+            secure: true, // MUST be set to true for sameSite: 'none'
+            httpOnly: true // Recommended for security
+        }
         /*new MongoStore({ mongooseConnection: mongoose.connection})*/
     })
 )
