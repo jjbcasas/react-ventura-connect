@@ -42,8 +42,6 @@ const Post = () => {
                     toast.error(data.message)
                 }
 
-                console.log(data)
-                console.log(user)
             } catch (error) {
                 console.error('Error fetching data:',error)
                 toast.error('Could not connect to the server')
