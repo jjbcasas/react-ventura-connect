@@ -1,8 +1,12 @@
 {
   "rewrites": [
     {
+      "source": "/api/:match*",
+      "destination": "https://ventura-connect.onrender.com/api/:match*"
+    },
+    {
       "source": "/(.*)",
-      "destination": "https://ventura-connect.onrender.com/$1"
+      "destination": "index.html"
     }
   ]
 }
