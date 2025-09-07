@@ -25,14 +25,6 @@
       "destination": "https://ventura-connect.onrender.com/auth/google/callback"
     },
     {
-      "source": "/feed",
-      "destination": "https://ventura-connect.onrender.com/feed"
-    },
-    {
-      "source": "/profile",
-      "destination": "https://ventura-connect.onrender.com/profile"
-    },
-    {
       "source": "/post",
       "destination": "https://ventura-connect.onrender.com/post"
     },
