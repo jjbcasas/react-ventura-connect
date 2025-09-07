@@ -16,6 +16,6 @@ router.post('/signup', postSignup)
 
 // Google Routes
 router.get('/auth/google', passport.authenticate('google', { scope: ['email','profile'], prompt: 'select_account'}))
-router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: `${process.env.FRONTEND_URL}/login` }), googleCallback)
+router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: `${process.env.FRONTEND_URL}/login`, successRedirect: `${process.env.FRONTEND_URL}/feed` }), googleCallback)
 
 export default router
