@@ -34,6 +34,7 @@ Run dev server:<br>
     - API SECRET = `your cloudinary api secret`
     - GOOGLE_CLIENT_ID = `your google client id`
     - GOOGLE_CLIENT_SECRET = `your google client secret`
-  
-  - Change the value if your API runs on a different port or host
-    - 
+    - FRONTEND_URL= `your frontend port number`
+    - BACKEND_URL= `your backend port number`
+  - Change the value in your frontend/.env file if your API runs on a different port or host
+    - VITE_REACT_APP_BACKEND_BASEURL = `your backend port number`
