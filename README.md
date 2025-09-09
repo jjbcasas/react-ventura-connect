@@ -11,7 +11,7 @@
 ![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
 ![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
 ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white) <br>
-  My initial objective was to foster local community connections around shared interests and county-specific topics. To achieve this, the application should allow users to create personalized profiles, upload photos, and interact securely through authentication. Early features include 'Like' and 'Follow' functionalities to promote engagement.
+  After building the initial version with a Node.js/Express.js backend and EJS templating, I made the strategic decision to migrate the entire frontend to React. This migration allowed me to rebuild core features to be more dynamic, reusable and modern, leveraging React's component-based architecture and state management capabilities.
 
 # Optimizations
   I plan to enhance the app by expanding user customization options, enabling cross-user posting, integrating diverse media types for richer content, and adding chat functionality.
