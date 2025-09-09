@@ -17,7 +17,7 @@
   I plan to enhance the app by expanding user customization options, enabling cross-user posting, integrating diverse media types for richer content, and adding chat functionality.
 
 # Lesson Learned
-   Through this process, I gained significant experience in backend development, particularly in designing and implementing CRUD operations. My proficiency in asynchronous programming with async/await improved considerably, and I deepened my knowledge of database querying for efficient and powerful feature creation.
+   Through this project, I gained significant experience developing a React frontend. I focused on component-based architecture, state management, and data fetching from a backend API. I also utilized the Context API to efficiently manage application-wide state.
 
 # Install
   run `npm install` <br>
