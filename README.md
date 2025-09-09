@@ -1,7 +1,7 @@
 ## Ventura Connect: <a href="https://ventura-connect.vercel.app">Visit Here</a>
 <div align="center">
  <a href="https://ventura-connect.vercel.app">
- <img src="https://github.com/jjbcasas/ventura-connect/blob/main/ventura-connect.gif"
+ <img src="https://github.com/jjbcasas/react-ventura-connect/blob/main/ventura-connect.GIF"
  </a>
 </div>
    A social media app enabling users to connect and share content. It features user authentication (email/password and Google OAuth) for secure account creation and log in. Allows users to browse posts, upload photos for profiles and new posts, and interact with others by following profiles, liking and commenting on posts.
