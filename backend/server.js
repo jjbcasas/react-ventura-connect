@@ -57,6 +57,7 @@ const allowedOrigins = [
 ]
 
 // cors middleware
+// cors header
 app.use(
     cors({
         origin: allowedOrigins,
@@ -70,13 +71,16 @@ app.use(
         secret: 'keyboard cat',
         resave: false,
         saveUninitialized: false,
+        name: '__Host-session',
         store: MongoStore.create({
             mongoUrl: process.env.DB_STRING
         }),
+        // cookie configuration object for frontend and backend that are deployed on different domains
         cookie: {
             sameSite: 'none',
             secure: true, // MUST be set to true for sameSite: 'none'
-            httpOnly: true // Recommended for security
+            httpOnly: true, // Recommended for security
+            path: '/'
         }
         /*new MongoStore({ mongooseConnection: mongoose.connection})*/
     })
