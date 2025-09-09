@@ -1,10 +1,10 @@
-## Ventura Connect: <a href="https://ventura-connect.vercel.app">Visit Here</a>
+## Ventura Connect: <a href="https://react-ventura-connect.vercel.app">Visit Here</a>
 <div align="center">
- <a href="https://ventura-connect.vercel.app">
+ <a href="https://react-ventura-connect.vercel.app">
  <img src="https://github.com/jjbcasas/react-ventura-connect/blob/main/ventura-connect.GIF"
  </a>
 </div>
-   A social media app enabling users to connect and share content. It features user authentication (email/password and Google OAuth) for secure account creation and log in. Allows users to browse posts, upload photos for profiles and new posts, and interact with others by following profiles, liking and commenting on posts.
+   A full-stack social media app with a React frontend and a Node.js/Express.js backend enabling users to connect and share content. It features user authentication (email/password and Google OAuth) for secure account creation and log in. Allows users to browse posts, upload photos for profiles and new posts, and interact with others by following profiles, liking and commenting on posts.
    
 # 💻 Tech Stack:
 ![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
