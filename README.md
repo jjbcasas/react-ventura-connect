@@ -21,9 +21,9 @@
 
 # Install
   Install dependencies:<br>
-    \t run `npm install` <br>
-  Run dev server:<br>
-    \t run `npm run dev` or `node server.js`
+    &nbsp;&nbsp; run `npm install` <br>
+Run dev server:<br>
+    &nbsp;&nbsp; run `npm run dev` or `node server.js`
 
 # Things to add
   - Create a '.env' file in backend/config folder and add the following `key = value`
