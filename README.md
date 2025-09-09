@@ -20,9 +20,9 @@
    Through this project, I gained significant experience developing a React frontend. I focused on component-based architecture, state management, and data fetching from a backend API. I also utilized the Context API to efficiently manage application-wide state.
 
 # Install
-  Install dependencies:
+  Install dependencies:<br>
     run `npm install` <br>
-  Run dev server:
+  Run dev server:<br>
     run `npm run dev` or `node server.js`
 
 # Things to add
