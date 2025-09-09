@@ -36,5 +36,5 @@ Run dev server:<br>
     - GOOGLE_CLIENT_SECRET = `your google client secret`
     - FRONTEND_URL= `your frontend port number`
     - BACKEND_URL= `your backend port number`
-  - Change the value in your frontend/.env file if your API runs on a different port or host
+  - Create .env file in your frontend folder add the value of your port or host
     - VITE_REACT_APP_BACKEND_BASEURL = `your backend port number`
