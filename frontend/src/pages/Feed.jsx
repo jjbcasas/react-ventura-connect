@@ -20,7 +20,7 @@ const Feed = () => {
         setLoading(true)
         const fetchData = async () => {
             try {
-                const res = await fetch(`/api/feed`, {
+                const res = await fetch(`/feed`, {
                     credentials: 'include'
                 })
                 const data = await res.json()
@@ -70,7 +70,7 @@ const Feed = () => {
 
     const addPost = async (formData) => {
         try {
-            const res = await fetch(`/api/feed/createPost`, {
+            const res = await fetch(`/feed/createPost`, {
                 method: 'POST',
                 credentials: 'include',
                 body: formData
@@ -95,7 +95,7 @@ const Feed = () => {
 
     const followUser = async (userId) => {
         try {
-            const res = await fetch(`/api/feed/followUser/${userId}`,{
+            const res = await fetch(`/feed/followUser/${userId}`,{
                 method: 'PUT',
                 credentials: 'include',
             })
@@ -118,7 +118,7 @@ const Feed = () => {
 
     const unfollowUser = async (userId) => {
         try {
-            const res = await fetch(`/api/feed/unfollowUser/${userId}`,{
+            const res = await fetch(`/feed/unfollowUser/${userId}`,{
                 method: 'PUT',
                 credentials: 'include',
             })
@@ -141,7 +141,7 @@ const Feed = () => {
 
     const likePost = async (postId) => {
         try {
-            const res = await fetch(`/api/feed/likePost/${postId}`,{
+            const res = await fetch(`/feed/likePost/${postId}`,{
                 method: 'PUT',
                 credentials: 'include',
             })
@@ -169,7 +169,7 @@ const Feed = () => {
 
     const unlikePost = async (postId) => {
         try {
-            const res = await fetch(`/api/feed/minusLike/${postId}`,{
+            const res = await fetch(`/feed/minusLike/${postId}`,{
                 method: 'PUT',
                 credentials: 'include',
             })
@@ -197,7 +197,7 @@ const Feed = () => {
 
     const deletePost = async (postId) => {
         try {
-            const res = await fetch(`/api/feed/deletePost/${postId}`, {
+            const res = await fetch(`/feed/deletePost/${postId}`, {
                 method: 'DELETE',
                 credentials: 'include',
             })
@@ -219,7 +219,7 @@ const Feed = () => {
 
     const addComment = async(comment, postId) => {
         try {
-            const res = await fetch(`/api/feed/comments/${postId}`,{
+            const res = await fetch(`/feed/comments/${postId}`,{
                 method: 'POST',
                 credentials: 'include',
                 headers: {
