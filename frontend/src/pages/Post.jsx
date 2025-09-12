@@ -26,7 +26,7 @@ const Post = () => {
         setLoading(true)
         const fetchData = async () => {
             try {
-                const res = await fetch(`/post/${id}`, {
+                const res = await fetch(`/api/post/${id}`, {
                   credentials: 'include'
               })
                 const data = await res.json()
@@ -54,7 +54,7 @@ const Post = () => {
 
     const followUser = async (userId) => {
         try {
-            const res = await fetch(`/post/followUser/${userId}`,{
+            const res = await fetch(`/api/post/followUser/${userId}`,{
                 method: 'PUT',
                 credentials: 'include',
             })
@@ -77,7 +77,7 @@ const Post = () => {
 
     const unfollowUser = async (userId) => {
         try {
-            const res = await fetch(`/post/unfollowUser/${userId}`,{
+            const res = await fetch(`/api/post/unfollowUser/${userId}`,{
                 method: 'PUT',
                 credentials: 'include',
             })
@@ -100,7 +100,7 @@ const Post = () => {
 
     const likePost = async (postId) => {
         try {
-            const res = await fetch(`/post/likePost/${postId}`,{
+            const res = await fetch(`/api/post/likePost/${postId}`,{
                 method: 'PUT',
                 credentials: 'include',
             })
@@ -128,7 +128,7 @@ const Post = () => {
 
     const unlikePost = async (postId) => {
         try {
-            const res = await fetch(`/post/minusLikePost/${postId}`,{
+            const res = await fetch(`/api/post/minusLikePost/${postId}`,{
                 method: 'PUT',
                 credentials: 'include',
             })
@@ -156,7 +156,7 @@ const Post = () => {
 
     const deletePost = async (postId) => {
         try {
-            const res = await fetch(`/post/deletePost/${postId}`, {
+            const res = await fetch(`/api/post/deletePost/${postId}`, {
                 method: 'DELETE',
                 credentials: 'include',
             })
@@ -179,7 +179,7 @@ const Post = () => {
 
     const addComment = async(comment, postId) => {
         try {
-            const res = await fetch(`/post/comments/${postId}`,{
+            const res = await fetch(`/api/post/comments/${postId}`,{
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -207,7 +207,7 @@ const Post = () => {
 
     const uploadPhoto = async (formData) => {
         try {
-            const res = await fetch(`/post/uploadProfilePhoto`, {
+            const res = await fetch(`/api/post/uploadProfilePhoto`, {
                 method: 'PUT',
                 credentials: 'include',
                 body: formData
@@ -232,7 +232,7 @@ const Post = () => {
 
     const changePhoto = async (formData) => {
         try {
-            const res = await fetch(`/post/changeProfilePhoto`, {
+            const res = await fetch(`/api/post/changeProfilePhoto`, {
                 method: 'PUT',
                 credentials: 'include',
                 body: formData
