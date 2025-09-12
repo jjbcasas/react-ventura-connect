@@ -50,12 +50,6 @@ connectDB()
 // static folder
 app.use(express.static('public'))
 
-app.use(express.static(path.join(__dirname, 'dist')))
-// app.use(express.static(path.join(__dirname, '../frontend/dist')))
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dist', 'index.html'))
-})
-
 // body parsing, so we can pull something from the request
 app.use(express.urlencoded({extended: true}))
 app.use(express.json())
@@ -110,6 +104,12 @@ app.use('/api', mainRoutes)
 app.use('/api/feed', feedRoutes)
 app.use('/api/profile', profileRoutes)
 app.use('/api/post', postRoutes)
+
+app.use(express.static(path.join(__dirname, 'dist')))
+// app.use(express.static(path.join(__dirname, '../frontend/dist')))
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'dist', 'index.html'))
+})
 
 // server running
 app.listen(process.env.PORT, () => {
