@@ -29,6 +29,7 @@ import path from 'path'
 
 app.set('trust proxy', 1)
 
+
 // use .env file in config folder
 dotenv.config({ path: './backend/config/.env'})
 
@@ -43,6 +44,11 @@ connectDB()
 
 // static folder
 app.use(express.static('public'))
+
+app.use(express.static(path.join(__dirname, '../frontend/dist')))
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'))
+})
 
 // body parsing, so we can pull something from the request
 app.use(express.urlencoded({extended: true}))

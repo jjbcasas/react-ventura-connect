@@ -155,5 +155,5 @@ dotenv.config({ path: './backend/config/.env'})
 
   export const googleCallback = async ( req, res) => {
     // Successful authentication, redirect home.
-    res.redirect(`${process.env.FRONTEND_URL}/feed`);
+    res.redirect(`/feed`);
   }
