@@ -59,7 +59,7 @@ app.use(logger('dev'))
 
 const allowedOrigins = [
     'http://localhost:5173',
-    process.env.FRONTEND_URL
+    process.env.BACKEND_URL
 ]
 
 // cors middleware
@@ -83,7 +83,7 @@ app.use(
         }),
         // cookie configuration object for frontend and backend that are deployed on different domains
         cookie: {
-            sameSite: 'none',
+            sameSite: 'lax',
             secure: true, // MUST be set to true for sameSite: 'none'
             httpOnly: true, // Recommended for security
             path: '/'
