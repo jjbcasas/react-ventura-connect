@@ -1,0 +1,25 @@
+# This file is placed in the root of your project
+services:
+- type: web
+  name: ventura-connect
+  env: node
+  plan: starter
+  # This build command runs npm install in the backend root
+  # and then runs npm install and build in the frontend folder.
+  buildCommand: 'npm install && npm --prefix frontend install && npm --prefix frontend run build'
+  # The start command runs your main server file.
+  startCommand: 'node server.js'
+  routes:
+  # This rule ensures all API traffic is handled by your server
+  - type: rewrite
+    source: /api/*
+    destination: /api/*
+  # This rule ensures all Google authentication traffic is handled by your server
+  - type: rewrite
+    source: /auth/*
+    destination: /auth/*
+  # This catch-all rule sends all other traffic to your server,
+  # which will then serve your React app's index.html
+  - type: rewrite
+    source: /*
+    destination: /*
