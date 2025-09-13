@@ -100,10 +100,10 @@ app.use(passport.session())
 app.use(flash())
 
 // Routes
-app.use('/api', mainRoutes)
-app.use('/api/feed', feedRoutes)
-app.use('/api/profile', profileRoutes)
-app.use('/api/post', postRoutes)
+app.use('/', mainRoutes)
+app.use('/feed', feedRoutes)
+app.use('/profile', profileRoutes)
+app.use('/post', postRoutes)
 
 app.use(express.static(path.join(__dirname, 'dist')))
 // app.use(express.static(path.join(__dirname, '../frontend/dist')))
