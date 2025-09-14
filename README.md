@@ -1,6 +1,6 @@
-## Ventura Connect: <a href="https://react-ventura-connect.vercel.app">Visit Here</a>
+## Ventura Connect: <a href="https://ventura-connect.onrender.com">Visit Here</a>
 <div align="center">
- <a href="https://react-ventura-connect.vercel.app">
+ <a href="https://ventura-connect.onrender.com">
  <img src="https://github.com/jjbcasas/react-ventura-connect/blob/main/ventura-connect.GIF"
  </a>
 </div>
