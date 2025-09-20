@@ -24,8 +24,8 @@
     &nbsp;&nbsp; run `npm install` <br>
     &nbsp;&nbsp; run `npm run dev` <br>
 Run the frontend:<br>
-    &nbsp;&nbsp; `cd frontend`
-    &nbsp;&nbsp; run `npm install`
+    &nbsp;&nbsp; `cd frontend` <br>
+    &nbsp;&nbsp; run `npm install` <br>
     &nbsp;&nbsp; run `npm run dev` or `node server.js`
 
 # Things to add
