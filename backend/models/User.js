@@ -13,7 +13,8 @@ const UserSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        unique: true
+        unique: true,
+        lowercase: true
     },
     password: String,
     followerId: [
@@ -47,7 +48,9 @@ const UserSchema = new mongoose.Schema({
       type: Date,
       default: Date.now
     }
-})
+}/*, { //this is for automatic creation of createdAt and UpdatedAt
+  timestamps: true
+}*/)
 
 // Password hash middleware
 UserSchema.pre('save', function save(next) {
