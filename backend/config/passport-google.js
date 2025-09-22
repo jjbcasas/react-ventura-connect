@@ -4,7 +4,7 @@ import User from '../models/User.js'
 import passport from 'passport'
 import dotenv from 'dotenv'
 import path from 'path'
-dotenv.config({ path: './backend/config/.env'})
+dotenv.config({ path: '../backend/config/.env'})
 
 export default function(passport){
     passport.use(new GoogleStrategy({
