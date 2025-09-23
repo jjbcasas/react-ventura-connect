@@ -77,13 +77,13 @@ app.use(
         secret: 'keyboard cat',
         resave: false,
         saveUninitialized: false,
-        name: '__Host-session',
+        name: process.env.NODE_ENV === 'production' ? '__Host-session' : 'session',
         store: MongoStore.create({
             mongoUrl: process.env.DB_STRING
         }),
         // cookie configuration object for frontend and backend that are deployed on different domains
         cookie: {
-            sameSite: 'lax',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
             secure: process.env.NODE_ENV === 'production', // MUST be set to true for sameSite: 'none'
             httpOnly: true, // Recommended for security
             path: '/'
