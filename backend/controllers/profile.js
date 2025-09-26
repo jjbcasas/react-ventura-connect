@@ -21,17 +21,24 @@ export const getProfile = async( req, res ) => {
             populate: {
                 path: 'followingId'
             }
-    }).sort({ createdAt: 'desc'})
+    }).sort({ createdAt: 'desc'}).lean()
 
         // Get the user that owns the specific profile page
-        const accountUser = await User.findOne({ _id: req.params.id }).populate('followingId').sort({ createdAt: 'desc'})
+        const accountUser = await User.findOne({ _id: req.params.id }).populate('followingId').lean()
 
+        if (!accountUser) {
+            return res.status(404).json({ message: 'User profile not found.' });
+        }
+
+        const postIdsArray = posts.map(post => post._id)
         // Get all comments and populate the commentUser field
-        const comments = await Comment.find().populate({
+        const comments = await Comment.find({
+            postId: { $in: postIdsArray }
+        }).populate({
             path: 'commentUser'
         }).sort({ createdAt: 'desc'})
 
-        const usersFriends = await User.find({ _id: req.user.id }).populate('followingId').sort({ createdAt: 'desc'})
+        const usersFriends = await User.findOne({ _id: req.user.id }).populate('followingId').lean()
 
         console.log('Data fetched!')
         res.status(200).json({ posts, accountUser, comments, usersFriends, message: 'Data fetched successfully!'})

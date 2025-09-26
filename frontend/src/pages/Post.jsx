@@ -11,16 +11,28 @@ import ProfilePost from "../components/ProfilePost"
 import ProfileRecommend from "../components/ProfileRecommend"
 import UnfollowButton from "../components/UnfollowButton"
 import { useAuth } from "../context/AuthContext"
+import { useApp } from "../context/AppContext"
 
 const Post = () => {
     const [post, setPost] = useState({})
-    const [comments, setComments] = useState([])
-    const [accountUser, setAccountUser] = useState({})
+    // const [comments, setComments] = useState([])
+    // const [accountUser, setAccountUser] = useState({})
     const [loading, setLoading] = useState(true)
     //   const { user, setUser, /*setMessages*/ } = useOutletContext()
     const { id } = useParams()
     const navigate = useNavigate()
     const { user, setUser } = useAuth()
+    const {
+        comments,
+        setComments,
+        accountUser,
+        setAccountUser,
+        addComment,
+        followUser,
+        unfollowUser,
+        uploadPhoto,
+        changePhoto
+    } = useApp()
 
     useEffect( () => {
         setLoading(true)
@@ -52,61 +64,15 @@ const Post = () => {
         fetchData()
     }, [])
 
-    const followUser = async (userId) => {
-        try {
-            const res = await fetch(`/api/post/followUser/${userId}`,{
-                method: 'PUT',
-                credentials: 'include',
-            })
-            const data = await res.json()
-    
-            if( res.ok ) {
-                if ( data.updatedFollow ) {
-                    setAccountUser({...accountUser, followerId: data.updatedFollow.followerId})
-                    toast.success(data.message)
-                }
-            } else {
-                console.error('Error following a user:', data.message || 'Unknown error')
-                toast.error(data.message)
-            }
-        } catch (error) {
-            console.error('Error following a user:', error)
-            toast.error('Could not connect to the server')
-        }
-    }
-
-    const unfollowUser = async (userId) => {
-        try {
-            const res = await fetch(`/api/post/unfollowUser/${userId}`,{
-                method: 'PUT',
-                credentials: 'include',
-            })
-            const data = await res.json()
-    
-            if ( res.ok ) {
-                if ( data.updatedUnfollow ) {
-                    setAccountUser({...accountUser, followerId: data.updatedUnfollow.followerId })
-                    toast.success(data.message)
-                }
-            } else {
-                console.error('Error unfollowing a user:', data.message || 'Unknown error')
-                toast.error(data.message)
-            }
-        } catch (error) {
-            console.error('Error unfollowing a user:', error)
-            toast.error('Could not connect to the server')
-        }
-    }
-
     const likePost = async (postId) => {
         try {
             const res = await fetch(`/api/post/likePost/${postId}`,{
                 method: 'PUT',
                 credentials: 'include',
             })
-    
+            
             const data = await res.json()
-    
+            
             if ( res.ok ) {
                 if ( data.updatedUser && data.updatedLike ) {
                     setUser({...user, likedPostId: data.updatedUser.likedPostId})
@@ -134,7 +100,7 @@ const Post = () => {
             })
     
             const data = await res.json()
-    
+            
             if ( res.ok ) {
                 if ( data.updatedUser && data.updatedLike ) {
                     setUser({...user, likedPostId: data.updatedUser.likedPostId})
@@ -151,7 +117,7 @@ const Post = () => {
             console.error('Error in unliking post:', error)
             toast.error('Could not connect to the server')
         }
-
+        
     }
 
     const deletePost = async (postId) => {
@@ -160,12 +126,12 @@ const Post = () => {
                 method: 'DELETE',
                 credentials: 'include',
             })
-
+            
             const data = await res.json()
             
             if ( res.status === 200 ) {
                 setPost({})
-                navigate(`/profile/${data.post.user}`)
+                navigate(`/profile/${user._id}`)
                 toast.success(data.message || 'Post deleted successfully!' )
             } else {
                 console.error('Error deleting post:', data.message || 'Unknown error')
@@ -177,83 +143,133 @@ const Post = () => {
         }
     }
 
-    const addComment = async(comment, postId) => {
-        try {
-            const res = await fetch(`/api/post/comments/${postId}`,{
-                method: 'POST',
-                credentials: 'include',
-                headers: {
-                    'Content-type': 'application/json'
-                },
-                body: JSON.stringify({comment}),
-            })
+    // const followUser = async (userId) => {
+    //     try {
+    //         const res = await fetch(`/api/post/followUser/${userId}`,{
+    //             method: 'PUT',
+    //             credentials: 'include',
+    //         })
+    //         const data = await res.json()
+    
+    //         if( res.ok ) {
+    //             if ( data.updatedFollow ) {
+    //                 setAccountUser({...accountUser, followerId: data.updatedFollow.followerId})
+    //                 toast.success(data.message)
+    //             }
+    //         } else {
+    //             console.error('Error following a user:', data.message || 'Unknown error')
+    //             toast.error(data.message)
+    //         }
+    //     } catch (error) {
+    //         console.error('Error following a user:', error)
+    //         toast.error('Could not connect to the server')
+    //     }
+    // }
 
-            const data = await res.json()
+    // const unfollowUser = async (userId) => {
+    //     try {
+    //         const res = await fetch(`/api/post/unfollowUser/${userId}`,{
+    //             method: 'PUT',
+    //             credentials: 'include',
+    //         })
+    //         const data = await res.json()
+    
+    //         if ( res.ok ) {
+    //             if ( data.updatedUnfollow ) {
+    //                 setAccountUser({...accountUser, followerId: data.updatedUnfollow.followerId })
+    //                 toast.success(data.message)
+    //             }
+    //         } else {
+    //             console.error('Error unfollowing a user:', data.message || 'Unknown error')
+    //             toast.error(data.message)
+    //         }
+    //     } catch (error) {
+    //         console.error('Error unfollowing a user:', error)
+    //         toast.error('Could not connect to the server')
+    //     }
+    // }
 
-            if ( res.ok ) {
-                if (data.comment){
-                    setComments([ data.comment, ...comments ])
-                    toast.success(data.message)
-                }
-            } else {
-                console.error('Error adding a comment:', data.message || 'Unknown error')
-                toast.error(data.message)
-            }
-        } catch (error) {
-            console.error('Error adding a comment:', error)
-            toast.error('Could not connect to the server')
-        }
-    }
+    // const addComment = async(comment, postId) => {
+    //     try {
+    //         const res = await fetch(`/api/post/comments/${postId}`,{
+    //             method: 'POST',
+    //             credentials: 'include',
+    //             headers: {
+    //                 'Content-type': 'application/json'
+    //             },
+    //             body: JSON.stringify({comment}),
+    //         })
 
-    const uploadPhoto = async (formData) => {
-        try {
-            const res = await fetch(`/api/post/uploadProfilePhoto`, {
-                method: 'PUT',
-                credentials: 'include',
-                body: formData
-            })
-            const data = await res.json()
+    //         const data = await res.json()
 
-            if ( res.ok ){
-                if ( data.newProfileImage.profileImage ){
-                    setUser({...user, profileImage: data.newProfileImage.profileImage})
-                    setAccountUser( accountUser._id === user._id ? {...accountUser, profileImage: data.newProfileImage.profileImage} : {...accountUser})
-                    toast.success(data.message)
-                }
-            } else {
-                console.error('Error uploading photo:', data.message)
-                toast.error(data.message)
-            }
-        } catch (error) {
-            console.error('Error uploading photo:', error)
-            toast.error('Could not connect to the server')
-        }
-    }
+    //         if ( res.ok ) {
+    //             if (data.comment){
+    //                 setComments([ data.comment, ...comments ])
+    //                 toast.success(data.message)
+    //             }
+    //         } else {
+    //             console.error('Error adding a comment:', data.message || 'Unknown error')
+    //             toast.error(data.message)
+    //         }
+    //     } catch (error) {
+    //         console.error('Error adding a comment:', error)
+    //         toast.error('Could not connect to the server')
+    //     }
+    // }
 
-    const changePhoto = async (formData) => {
-        try {
-            const res = await fetch(`/api/post/changeProfilePhoto`, {
-                method: 'PUT',
-                credentials: 'include',
-                body: formData
-            })
-            const data = await res.json()
+    // const uploadPhoto = async (formData) => {
+    //     try {
+    //         const res = await fetch(`/api/post/uploadProfilePhoto`, {
+    //             method: 'PUT',
+    //             credentials: 'include',
+    //             body: formData
+    //         })
+    //         const data = await res.json()
 
-            if ( res.ok ){
-                if ( data.newProfileImage.profileImage ){
-                    setUser({...user, profileImage: data.newProfileImage.profileImage})
-                    setAccountUser( accountUser._id === user._id ? {...accountUser, profileImage: data.newProfileImage.profileImage} : {...accountUser})
-                    toast.success(data.message)
-                }
-            } else {
-                console.error('Error uploading photo:', data.message)
-                toast.error(data.message)
-            }
-        } catch (error) {
-            console.error('Error uploading photo:', error)
-            toast.error('Could not connect to the server')
-        }
-    }
+    //         if ( res.ok ){
+    //             if ( data.newProfileImage.profileImage ){
+    //                 setUser({...user, profileImage: data.newProfileImage.profileImage})
+    //                 setAccountUser(
+    //                     accountUser._id === user._id
+    //                         ? {...accountUser, profileImage: data.newProfileImage.profileImage}
+    //                         : accountUser
+    //                 )
+    //                 toast.success(data.message)
+    //             }
+    //         } else {
+    //             console.error('Error uploading photo:', data.message)
+    //             toast.error(data.message)
+    //         }
+    //     } catch (error) {
+    //         console.error('Error uploading photo:', error)
+    //         toast.error('Could not connect to the server')
+    //     }
+    // }
+
+    // const changePhoto = async (formData) => {
+    //     try {
+    //         const res = await fetch(`/api/post/changeProfilePhoto`, {
+    //             method: 'PUT',
+    //             credentials: 'include',
+    //             body: formData
+    //         })
+    //         const data = await res.json()
+
+    //         if ( res.ok ){
+    //             if ( data.newProfileImage.profileImage ){
+    //                 setUser({...user, profileImage: data.newProfileImage.profileImage})
+    //                 setAccountUser( accountUser._id === user._id ? {...accountUser, profileImage: data.newProfileImage.profileImage} : {...accountUser})
+    //                 toast.success(data.message)
+    //             }
+    //         } else {
+    //             console.error('Error uploading photo:', data.message)
+    //             toast.error(data.message)
+    //         }
+    //     } catch (error) {
+    //         console.error('Error uploading photo:', error)
+    //         toast.error('Could not connect to the server')
+    //     }
+    // }
 
   return (
     <section>
@@ -276,15 +292,29 @@ const Post = () => {
                               
                                       accountUser?.profileImage ? (
                                           
-                                          <Upload submitPhoto={changePhoto} title='Change Photo' />
+                                        <Upload
+                                            submitPhoto={( formData ) => changePhoto( formData, `/api/post/changeProfilePhoto` )}
+                                            title='Change Photo'
+                                        />
                                       ) : (
-                                          <Upload submitPhoto={uploadPhoto} title='Add Photo' />
+                                        <Upload
+                                            submitPhoto={( formData ) => uploadPhoto( formData, `/api/post/uploadProfilePhoto` )}
+                                            title='Add Photo'
+                                        />
                                       )
                                       
                                   ) : ( accountUser?.followerId?.includes(user?._id) ? (
-                                              <UnfollowButton classNameOne='mt-2' userId={accountUser?._id} unfollowUser={unfollowUser}/>
+                                              <UnfollowButton
+                                                classNameOne='mt-2'
+                                                userId={accountUser?._id}
+                                                unfollowUser={( userId ) => unfollowUser( userId, '/api/post/unfollowUser/')}
+                                            />
                                       ):(
-                                              <FollowButton classNameOne='mt-2' userId={accountUser?._id} followUser={followUser}/>
+                                              <FollowButton
+                                                classNameOne='mt-2'
+                                                userId={accountUser?._id}
+                                                followUser={( userId ) => followUser( userId, '/api/post/followUser/')}
+                                            />
                                       )
                                   )}
       
@@ -307,7 +337,8 @@ const Post = () => {
                       {/* Profile Feed for users without post */}
                       <section className="w-full md:w-2/4 order-3 md:order-2 pt-4 px-1">
                           <ul className="mt-5">
-                                  <ProfilePost key={post?._id} post={post} comments={comments} user={user} accountUser={accountUser} likePost={likePost} unlikePost={unlikePost} deletePost={deletePost} classNameOne="w-full" addComment={addComment}/>
+                                  <ProfilePost key={post?._id} post={post} comments={comments} user={user} accountUser={accountUser} likePost={likePost} unlikePost={unlikePost} deletePost={deletePost} classNameOne="w-full"
+                                    addComment={( comment, postId ) => addComment( comment, postId, `/api/post/comments/`)}/>
                           </ul>            
                       </section>
                       

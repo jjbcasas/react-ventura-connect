@@ -6,15 +6,29 @@ import { /*useOutletContext,*/ Link } from "react-router-dom"
 import ProfileRecommend from "../components/ProfileRecommend"
 import toast from "react-hot-toast"
 import { useAuth } from "../context/AuthContext"
+import { useApp } from "../context/AppContext"
 
 const Feed = () => {
-    const [posts, setPosts] = useState([])
+    // const [posts, setPosts] = useState([])
     const [allUsers, setAllUsers] = useState([])
-    const [comments, setComments] = useState([])
+    // const [comments, setComments] = useState([])
     const [loading, setLoading] = useState(true)
     // const { user, setUser } = useOutletContext()
     const fileInputRef = useRef(null)
     const { user, setUser } = useAuth()
+    const {
+        addPost,
+        posts,
+        setPosts,
+        deletePost,
+        addComment,
+        comments,
+        setComments,
+        followUserInFeed,
+        unfollowUserInFeed,
+        likePostInFeed,
+        unlikePostInFeed
+    } = useApp()
 
     useEffect( () => {
         setLoading(true)
@@ -68,189 +82,189 @@ const Feed = () => {
         fetchData()
     }, [])
 
-    const addPost = async (formData) => {
-        try {
-            const res = await fetch(`/api/feed/createPost`, {
-                method: 'POST',
-                credentials: 'include',
-                body: formData
-            })
-            const data = await res.json()
+    // const addPost = async (formData) => {
+    //     try {
+    //         const res = await fetch(`/api/feed/createPost`, {
+    //             method: 'POST',
+    //             credentials: 'include',
+    //             body: formData
+    //         })
+    //         const data = await res.json()
 
-            if ( res.ok ) {
-                if (data.post) {
-                    setPosts([data.post, ...posts])
-                    toast.success(data.message)
-                }
-            } else {
-                console.error('Error adding a post', error)
-                toast.error(data.message)
-            }
+    //         if ( res.ok ) {
+    //             if (data.post) {
+    //                 setPosts([data.post, ...posts])
+    //                 toast.success(data.message)
+    //             }
+    //         } else {
+    //             console.error('Error adding a post', data.message)
+    //             toast.error(data.message)
+    //         }
             
-        } catch (error) {
-            console.error('Error adding a post:', error)
-            toast.error('Could not connect to the server')
-        }
-    }
+    //     } catch (error) {
+    //         console.error('Error adding a post:', error)
+    //         toast.error('Could not connect to the server')
+    //     }
+    // }
 
-    const followUser = async (userId) => {
-        try {
-            const res = await fetch(`/api/feed/followUser/${userId}`,{
-                method: 'PUT',
-                credentials: 'include',
-            })
-            const data = await res.json()
+    // const followUser = async (userId) => {
+    //     try {
+    //         const res = await fetch(`/api/feed/followUser/${userId}`,{
+    //             method: 'PUT',
+    //             credentials: 'include',
+    //         })
+    //         const data = await res.json()
     
-            if( res.ok ) {
-                if ( data.updatedFollowing ) {
-                    setUser({...user, followingId: data.updatedFollowing.followingId})
-                    toast.success(data.message)
-                }
-            } else {
-                console.error('Error following a user:', data.message || 'Unknown error')
-                toast.error(data.message)
-            }
-        } catch (error) {
-            console.error('Error following a user:', error)
-            toast.error('Could not connect to the server')
-        }
-    }
+    //         if( res.ok ) {
+    //             if ( data.updatedFollowing ) {
+    //                 setUser({...user, followingId: data.updatedFollowing.followingId})
+    //                 toast.success(data.message)
+    //             }
+    //         } else {
+    //             console.error('Error following a user:', data.message || 'Unknown error')
+    //             toast.error(data.message)
+    //         }
+    //     } catch (error) {
+    //         console.error('Error following a user:', error)
+    //         toast.error('Could not connect to the server')
+    //     }
+    // }
 
-    const unfollowUser = async (userId) => {
-        try {
-            const res = await fetch(`/api/feed/unfollowUser/${userId}`,{
-                method: 'PUT',
-                credentials: 'include',
-            })
-            const data = await res.json()
+    // const unfollowUser = async (userId) => {
+    //     try {
+    //         const res = await fetch(`/api/feed/unfollowUser/${userId}`,{
+    //             method: 'PUT',
+    //             credentials: 'include',
+    //         })
+    //         const data = await res.json()
     
-            if ( res.ok ) {
-                if ( data.updatedUnfollowing ) {
-                    setUser({...user, followingId: data.updatedUnfollowing.followingId })
-                    toast.success(data.message)
-                }
-            } else {
-                console.error('Error unfollowing a user:', data.message || 'Unknown error')
-                toast.error(data.message)
-            }
-        } catch (error) {
-            console.error('Error unfollowing a user:', error)
-            toast.error('Could not connect to the server')
-        }
-    }
+    //         if ( res.ok ) {
+    //             if ( data.updatedUnfollowing ) {
+    //                 setUser({...user, followingId: data.updatedUnfollowing.followingId })
+    //                 toast.success(data.message)
+    //             }
+    //         } else {
+    //             console.error('Error unfollowing a user:', data.message || 'Unknown error')
+    //             toast.error(data.message)
+    //         }
+    //     } catch (error) {
+    //         console.error('Error unfollowing a user:', error)
+    //         toast.error('Could not connect to the server')
+    //     }
+    // }
 
-    const likePost = async (postId) => {
-        try {
-            const res = await fetch(`/api/feed/likePost/${postId}`,{
-                method: 'PUT',
-                credentials: 'include',
-            })
+    // const likePost = async (postId) => {
+    //     try {
+    //         const res = await fetch(`/api/feed/likePost/${postId}`,{
+    //             method: 'PUT',
+    //             credentials: 'include',
+    //         })
     
-            const data = await res.json()
+    //         const data = await res.json()
     
-            if ( res.ok ) {
-                if ( data.updatedUser && data.updatedLike ) {
-                    setUser({...user, likedPostId: data.updatedUser.likedPostId})
-                    setPosts(posts.map( post => (
-                        post._id === postId ? { ...post, likes: data.updatedLike.likes } : post
-                    )))
-                    toast.success(data.message)
-                } else {
-                    console.error('Error in liking post:', data.message || 'Unknown error')
-                    toast.error(data.message)
-                }
-            }
-        } catch (error) {
-            console.error('Error in liking post:', error)
-            toast.error('Could not connect to the server')
-        }
+    //         if ( res.ok ) {
+    //             if ( data.updatedUser && data.updatedLike ) {
+    //                 setUser({...user, likedPostId: data.updatedUser.likedPostId})
+    //                 setPosts(posts.map( post => (
+    //                     post._id === postId ? { ...post, likes: data.updatedLike.likes } : post
+    //                 )))
+    //                 toast.success(data.message)
+    //             } else {
+    //                 console.error('Error in liking post:', data.message || 'Unknown error')
+    //                 toast.error(data.message)
+    //             }
+    //         }
+    //     } catch (error) {
+    //         console.error('Error in liking post:', error)
+    //         toast.error('Could not connect to the server')
+    //     }
 
-    }
+    // }
 
-    const unlikePost = async (postId) => {
-        try {
-            const res = await fetch(`/api/feed/minusLike/${postId}`,{
-                method: 'PUT',
-                credentials: 'include',
-            })
+    // const unlikePost = async (postId) => {
+    //     try {
+    //         const res = await fetch(`/api/feed/minusLike/${postId}`,{
+    //             method: 'PUT',
+    //             credentials: 'include',
+    //         })
     
-            const data = await res.json()
+    //         const data = await res.json()
     
-            if ( res.ok ) {
-                if ( data.updatedUser && data.updatedLike ) {
-                    setUser({...user, likedPostId: data.updatedUser.likedPostId})
-                    setPosts(posts.map( post => (
-                        post._id === postId ? { ...post, likes: data.updatedLike.likes } : post
-                    )))
-                    toast.success(data.message)
-                }
-            } else {
-                console.error('Error in unliking post:', data.message || 'Unknown error')
-                toast.error(data.message)
-            }
-        } catch (error) {
-            console.error('Error in unliking post:', error)
-            toast.error('Could not connect to the server')
-        }
+    //         if ( res.ok ) {
+    //             if ( data.updatedUser && data.updatedLike ) {
+    //                 setUser({...user, likedPostId: data.updatedUser.likedPostId})
+    //                 setPosts(posts.map( post => (
+    //                     post._id === postId ? { ...post, likes: data.updatedLike.likes } : post
+    //                 )))
+    //                 toast.success(data.message)
+    //             }
+    //         } else {
+    //             console.error('Error in unliking post:', data.message || 'Unknown error')
+    //             toast.error(data.message)
+    //         }
+    //     } catch (error) {
+    //         console.error('Error in unliking post:', error)
+    //         toast.error('Could not connect to the server')
+    //     }
 
-    }
+    // }
 
-    const deletePost = async (postId) => {
-        try {
-            const res = await fetch(`/api/feed/deletePost/${postId}`, {
-                method: 'DELETE',
-                credentials: 'include',
-            })
+    // const deletePost = async (postId) => {
+    //     try {
+    //         const res = await fetch(`/api/feed/deletePost/${postId}`, {
+    //             method: 'DELETE',
+    //             credentials: 'include',
+    //         })
 
-            const data = await res.json()
+    //         const data = await res.json()
             
-            if ( res.status === 200 ) {
-                setPosts(posts.filter( post => post._id !== postId))
-                toast.success(data.message || 'Post deleted successfully!' )
-            } else {
-                console.error('Error deleting post:', data.message || 'Unknown error')
-                toast.error(data.message)
-            }
-        } catch (error) {
-            console.error('Error deleting post:', error)
-            toast.error('Could not connect to the server')
-        }
-    }
+    //         if ( res.status === 200 ) {
+    //             setPosts(posts.filter( post => post._id !== postId))
+    //             toast.success(data.message || 'Post deleted successfully!' )
+    //         } else {
+    //             console.error('Error deleting post:', data.message || 'Unknown error')
+    //             toast.error(data.message)
+    //         }
+    //     } catch (error) {
+    //         console.error('Error deleting post:', error)
+    //         toast.error('Could not connect to the server')
+    //     }
+    // }
 
-    const addComment = async(comment, postId) => {
-        try {
-            const res = await fetch(`/api/feed/comments/${postId}`,{
-                method: 'POST',
-                credentials: 'include',
-                headers: {
-                    'Content-type': 'application/json'
-                },
-                body: JSON.stringify({comment}),
-            })
+    // const addComment = async(comment, postId) => {
+    //     try {
+    //         const res = await fetch(`/api/feed/comments/${postId}`,{
+    //             method: 'POST',
+    //             credentials: 'include',
+    //             headers: {
+    //                 'Content-type': 'application/json'
+    //             },
+    //             body: JSON.stringify({comment}),
+    //         })
 
-            const data = await res.json()
+    //         const data = await res.json()
 
-            if ( res.ok ) {
-                if (data.comment){
-                    setComments([ data.comment, ...comments ])
-                    toast.success(data.message)
-                }
-            } else {
-                console.error('Error adding a comment:', data.message || 'Unknown error')
-                toast.error(data.message)
-            }
-        } catch (error) {
-            console.error('Error adding a comment:', error)
-            toast.error('Could not connect to the server')
-        }
-    }
+    //         if ( res.ok ) {
+    //             if (data.comment){
+    //                 setComments([ data.comment, ...comments ])
+    //                 toast.success(data.message)
+    //             }
+    //         } else {
+    //             console.error('Error adding a comment:', data.message || 'Unknown error')
+    //             toast.error(data.message)
+    //         }
+    //     } catch (error) {
+    //         console.error('Error adding a comment:', error)
+    //         toast.error('Could not connect to the server')
+    //     }
+    // }
 
   return (
     <section className="flex flex-wrap justify-evenly min-h-125">
             <div className="w-3/4 sm:w-2/3 pt-4">
                 
                 <div className="w-full md:w-3/4 mx-auto grow-1 px-2">
-                    <AddPost addPost={addPost} fileInputRef={fileInputRef} width='w-full grow-2' divWidth='w-full' />
+                    <AddPost addPost={(formData)=> addPost(formData, '/api/feed/createPost')} fileInputRef={fileInputRef} width='w-full grow-2' divWidth='w-full' />
                 </div>
                     { loading ? (
                         <Spinner loading={loading} />
@@ -258,7 +272,14 @@ const Feed = () => {
                         <>
                             <ul>
                                 { posts.map((post) => (
-                                    <Post key={post._id} user={user} post={post} comments={comments} likePost={likePost} unlikePost={unlikePost} deletePost={deletePost} addComment={addComment} followUser={followUser} unfollowUser={unfollowUser} />
+                                    <Post key={post._id} user={user} post={post} comments={comments}
+                                        likePost={likePostInFeed}
+                                        unlikePost={unlikePostInFeed} 
+                                        deletePost={( postId ) => deletePost(postId, '/api/feed/deletePost/')} 
+                                        addComment={( comment, postId ) => addComment(comment, postId, '/api/feed/comments/')}
+                                        followUser={followUserInFeed}
+                                        unfollowUser={unfollowUserInFeed}
+                                    />
                                 ))}
                             </ul>
                         </>
@@ -274,7 +295,7 @@ const Feed = () => {
                     <div className="card-body">
                         <ul className="flex flex-wrap justify-center">
                             { allUsers.map(users => (
-                                !user?.followingId?.includes(users._id) && users?._id !== user?._id &&
+                                !user?.followingId?.includes(users._id) &&
                                     <ProfileRecommend key={users._id} following={users} width='w-16' />
                             ))}
                         </ul>

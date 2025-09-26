@@ -26,11 +26,12 @@ import mainRoutes from './routes/main.js'
 import profileRoutes from './routes/profile.js'
 import postRoutes from './routes/post.js'
 import path from 'path'
-import { fileURLToPath } from 'url'
+// import { fileURLToPath } from 'url'
 
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+const __dirname = path.resolve()
+// const __filename = fileURLToPath(import.meta.url)
+// const __dirname = path.dirname(__filename)
 
 app.set('trust proxy', 1)
 
@@ -48,7 +49,7 @@ passportGoogleConfig(passport)
 connectDB()
 
 // static folder
-app.use(express.static('public'))
+// app.use(express.static('public'))
 
 // body parsing, so we can pull something from the request
 app.use(express.urlencoded({extended: true}))
@@ -105,11 +106,17 @@ app.use('/api/feed', feedRoutes)
 app.use('/api/profile', profileRoutes)
 app.use('/api/post', postRoutes)
 
-app.use(express.static(path.join(__dirname, 'dist')))
+if ( process.env.NODE_ENV === 'production' ) {
+    app.use(express.static(path.join(__dirname, '/frontend/dist')))
+    app.get('/*path', (req, res) => {
+        res.sendFile(path.join(__dirname, 'frontend', 'dist', 'index.html'))
+    })
+}
+// app.use(express.static(path.join(__dirname, 'dist')))
 // app.use(express.static(path.join(__dirname, '../frontend/dist')))
-app.get('/*path', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dist', 'index.html'))
-})
+// app.get('/*path', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'dist', 'index.html'))
+// })
 
 // server running
 app.listen(process.env.PORT, () => {

@@ -13,6 +13,7 @@ import Profile from './pages/Profile'
 import Signup from './pages/Signup'
 import ErrorPage from './components/ErrorPage'
 import { AuthProvider } from './context/AuthContext'
+import { AppProvider } from './context/AppContext'
 import PublicRoute from './utils/PublicRoute'
 import ProtectedRoute from './utils/ProtectedRoute'
 import Logout from './components/Logout'
@@ -40,7 +41,9 @@ const App = () => {
 
   return (
     <AuthProvider>
-      <RouterProvider router={router} />
+      <AppProvider>
+        <RouterProvider router={router} />
+      </AppProvider>
     </AuthProvider>
   )
 }

@@ -11,7 +11,7 @@ export const getPost = async(req, res) => {
 
         // Validate if the provided ID is a valid MongoDB ObjectId
         if ( !mongoose.Types.ObjectId.isValid(id)){
-            return res.status(404).json({message: 'Invalid Post Id!'})
+            return res.status(404).json({message: 'Post not found.'})
         }
         // Find a specific post and populate
         const post = await Post.findOne({ _id: req.params.id }).populate({
@@ -19,9 +19,15 @@ export const getPost = async(req, res) => {
                 populate: {
                     path: 'followingId'
                 }
-        }).sort({ createdAt: 'desc'}).lean()
+        }).lean()
 
-        const accountUser = await User.findOne({ _id: post.user }).populate('followingId').sort({ createdAt: 'desc'}).lean()
+        if (!post) {
+            // This handles the "invalid ID requested" scenario where the ID format is correct 
+            // but no document exists. This is a data-specific 404.
+            return res.status(404).json({ message: 'Post not found.' });
+        }
+
+        const accountUser = post.user
 
         // Find or get all comment under the same user
         const comments = await Comment.find({ postId: req.params.id}).populate({

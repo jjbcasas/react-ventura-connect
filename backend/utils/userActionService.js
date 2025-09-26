@@ -64,7 +64,7 @@ export const likePost = async ( req, res ) => {
                 $inc: { likes: 1}
             },
             { new: true }
-        )
+        ).lean()
 
         // Find a specific user and update
         const updatedUser = await User.findOneAndUpdate(
@@ -73,7 +73,7 @@ export const likePost = async ( req, res ) => {
                 $push: { likedPostId: id }
             },
             { new: true }
-        )
+        ).lean()
 
         // Check if the post was found
         if (!updatedLike) {
@@ -112,7 +112,7 @@ export const minusLike = async ( req, res ) => {
                 $inc: { likes: -1}
             },
             { new: true }
-        )
+        ).lean()
 
         // Find a specific user and update
         const updatedUser = await User.findOneAndUpdate(
@@ -121,7 +121,7 @@ export const minusLike = async ( req, res ) => {
                 $pull: { likedPostId: id }
             },
             { new: true }
-        )
+        ).lean()
 
         // 5. Check if the post was found and updated
         if (!updatedLike) {
@@ -224,7 +224,7 @@ export const followUser = async ( req, res ) => {
                 }
             },
             { new: true }
-        )
+        ).lean()
         
         // Find a specific user and update
         const updatedFollowing = await User.findOneAndUpdate(
@@ -235,7 +235,11 @@ export const followUser = async ( req, res ) => {
                 }
             },
             { new: true }
-        )
+        ).lean()
+        
+        if (!updatedFollow || !updatedFollowing) {
+            return res.status(404).json({ message: 'User not found!' });
+        }
         
         console.log('Followed a user!')
         res.status(200).json({ updatedFollow, updatedFollowing, message: 'Followed successfully!'})
@@ -263,7 +267,7 @@ export const unfollowUser = async ( req, res ) => {
                 }
             },
             { new: true }
-        )
+        ).lean()
         
         // Find a specific user and update
         const updatedUnfollowing = await User.findOneAndUpdate(
@@ -274,7 +278,7 @@ export const unfollowUser = async ( req, res ) => {
                 }
             },
             { new: true }
-        )
+        ).lean()
 
         console.log('Unfollowed a user!')
         res.status(200).json({ updatedUnfollow, updatedUnfollowing, message: 'Unfollowed successfully!'})
@@ -286,9 +290,23 @@ export const unfollowUser = async ( req, res ) => {
 
 export const uploadProfilePhoto = async ( req, res ) => {
     try{
+        const { id } = req.user
+
         if ( !req.file ) {
             return res.status(400).json({ message: 'No image file uploaded.'})
            }
+
+        // uncomment if you want two-step process
+        // Validate if the provided ID is a valid MongoDB ObjectId
+        if ( !mongoose.Types.ObjectId.isValid(id)){
+            return res.status(404).json({message: 'Invalid User Id!'})
+        }
+
+        const user = await User.findById({ _id: id })
+        if (!user) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
+
         const uploadResult = await cloudinary.uploader.upload(req.file.path)
 
          // Find and update a specific user
@@ -322,7 +340,7 @@ export const changeProfilePhoto = async ( req, res ) => {
         // uncomment if you want two-step process
         // Validate if the provided ID is a valid MongoDB ObjectId
         if ( !mongoose.Types.ObjectId.isValid(id)){
-            return res.status(404).json({message: 'Invalid Post Id!'})
+            return res.status(404).json({message: 'Invalid User Id!'})
         }
 
         const user = await User.findById({ _id: id })

@@ -8,14 +8,25 @@ import { createPost, likePost, minusLike, /*deletePost,*/ createComment, followU
 export const getFeed = async ( req, res ) => {
     try {
         // const user = req.user
+        if (!req.user || !req.user.id) {
+            // If the user isn't logged in, perhaps show a general public feed or login prompt
+            return res.status(401).json({ message: 'Authentication required to access feed.' });
+        }
+
         // Get all post
-        const posts = await Post.find().populate('user').sort({ createdAt: 'desc'})
+        const posts = await Post.find()
+        .populate('user')
+        .sort({ createdAt: 'desc'})
+        .limit(10)
+        .lean()
         // Get all Comments
         const comments = await Comment.find().populate({
             path: 'commentUser'
         }).sort({ createdAt: 'desc'})
         // Get all Users
-        const allUsers = await User.find().sort({ createdAt: 'desc'})
+        const allUsers = await User.find({ _id: { $ne: req.user.id } })
+        .select('_id userName profileImage followingId')
+        .sort({ createdAt: 'desc'}).limit(5).lean()
 
         console.log('Data fetched!')
         res.status(200).json({ posts, comments, allUsers})
