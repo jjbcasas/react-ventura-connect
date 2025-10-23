@@ -4,7 +4,10 @@ import { getUser, postLogin, logout, postSignup, googleCallback} from '../contro
 import passport from 'passport'
 import dotenv from 'dotenv'
 import path from 'path'
+import { arcjetProtection } from '../middleware/arcjet.js'
 dotenv.config({ path: './backend/config/.env'})
+
+router.use(arcjetProtection)
 
 // Auth Routes
 router.get('/user', getUser)

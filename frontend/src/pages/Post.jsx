@@ -14,11 +14,11 @@ import { useAuth } from "../context/AuthContext"
 import { useApp } from "../context/AppContext"
 
 const Post = () => {
-    const [post, setPost] = useState({})
     // const [comments, setComments] = useState([])
     // const [accountUser, setAccountUser] = useState({})
-    const [loading, setLoading] = useState(true)
     //   const { user, setUser, /*setMessages*/ } = useOutletContext()
+    const [post, setPost] = useState({})
+    const [loading, setLoading] = useState(true)
     const { id } = useParams()
     const navigate = useNavigate()
     const { user, setUser } = useAuth()
@@ -28,18 +28,23 @@ const Post = () => {
         accountUser,
         setAccountUser,
         addComment,
+        likePost,
+        unlikePost,
         followUser,
         unfollowUser,
+        deletePost,
         uploadPhoto,
         changePhoto
     } = useApp()
 
     useEffect( () => {
+        const controller = new AbortController()
         setLoading(true)
         const fetchData = async () => {
             try {
                 const res = await fetch(`/api/post/${id}`, {
-                  credentials: 'include'
+                    credentials: 'include',
+                    signal: controller.signal
               })
                 const data = await res.json()
 
@@ -49,99 +54,179 @@ const Post = () => {
                         setComments(data.comments)
                         setAccountUser(data.accountUser)
                     }
+
+                    setLoading(false)
                 } else {
                     console.error('Error fetching data:', data.message)
                     toast.error(data.message)
+
+                    setLoading(false)
                 }
 
             } catch (error) {
+                if ( error instanceof Error && error.name === 'AbortError') {
+                    console.log('Request was cancelled');
+                    return; // Stop execution, no state should be set.
+                }
+
                 console.error('Error fetching data:',error)
                 toast.error('Could not connect to the server')
-            } finally {
+                
                 setLoading(false)
             }
         }
         fetchData()
-    }, [])
-
-    const likePost = async (postId) => {
-        try {
-            const res = await fetch(`/api/post/likePost/${postId}`,{
-                method: 'PUT',
-                credentials: 'include',
-            })
-            
-            const data = await res.json()
-            
-            if ( res.ok ) {
-                if ( data.updatedUser && data.updatedLike ) {
-                    setUser({...user, likedPostId: data.updatedUser.likedPostId})
-                    setPost(post._id === postId ? { ...post, likes: data.updatedLike.likes } : post
-                    )
-                    setAccountUser( accountUser._id === user._id ? {...accountUser, likedPostId: data.updatedUser.likedPostId } : accountUser)
-                    toast.success(data.message)
-                } else {
-                    console.error('Error in liking post:', data.message || 'Unknown error')
-                    toast.error(data.message)
-                }
-            }
-        } catch (error) {
-            console.error('Error in liking post:', error)
-            toast.error('Could not connect to the server')
-        }
-
-    }
-
-    const unlikePost = async (postId) => {
-        try {
-            const res = await fetch(`/api/post/minusLikePost/${postId}`,{
-                method: 'PUT',
-                credentials: 'include',
-            })
-    
-            const data = await res.json()
-            
-            if ( res.ok ) {
-                if ( data.updatedUser && data.updatedLike ) {
-                    setUser({...user, likedPostId: data.updatedUser.likedPostId})
-                    setPost(post._id === postId ? { ...post, likes: data.updatedLike.likes } : post
-                    )
-                    setAccountUser( accountUser._id === user._id ? {...accountUser, likedPostId: data.updatedUser.likedPostId } : accountUser)
-                    toast.success(data.message)
-                }
-            } else {
-                console.error('Error in unliking post:', data.message || 'Unknown error')
-                toast.error(data.message)
-            }
-        } catch (error) {
-            console.error('Error in unliking post:', error)
-            toast.error('Could not connect to the server')
-        }
         
+        return () => {
+            controller.abort(); 
+        }
+    }, [])
+    
+    const handleLikePost = ( postId ) => {
+        const updatedPost = ( data ) => {
+            setPost( prevPost => ( 
+                prevPost?._id === postId ?
+                { ...prevPost, likes: data.updatedLike.likes }
+                : prevPost
+            ))
+
+            setAccountUser( prevAccountUser => ( 
+                prevAccountUser?._id === user?._id ?
+                    {...prevAccountUser, likedPostId: data.updatedUser.likedPostId }
+                    : prevAccountUser ))
+                    
+            toast.success(data.message)
+        }
+    
+        likePost( postId, updatedPost, `/api/post/likePost/`)
+    }
+    
+    const handleUnlikePost = ( postId ) => {
+        const updatedPost = ( data ) => {
+            setPost( prevPost => (
+                prevPost?._id === postId ?
+                { ...prevPost, likes: data.updatedLike.likes }
+                : prevPost ))
+
+            setAccountUser( prevAccountUser => (
+                prevAccountUser?._id === user?._id ?
+                {...prevAccountUser, likedPostId: data.updatedUser.likedPostId }
+                : prevAccountUser ))
+
+            toast.success(data.message)
+        }
+
+        unlikePost( postId, updatedPost, `/api/post/minusLikePost/`)
     }
 
-    const deletePost = async (postId) => {
-        try {
-            const res = await fetch(`/api/post/deletePost/${postId}`, {
-                method: 'DELETE',
-                credentials: 'include',
-            })
-            
-            const data = await res.json()
-            
-            if ( res.status === 200 ) {
-                setPost({})
-                navigate(`/profile/${user._id}`)
-                toast.success(data.message || 'Post deleted successfully!' )
-            } else {
-                console.error('Error deleting post:', data.message || 'Unknown error')
-                toast.error(data.message)
+    const handleFollowUser = ( postId ) => {
+        const updatedUser = ( data ) => {
+            if ( data.updatedFollow ) {
+                setAccountUser( prevAccountUser => ({...prevAccountUser, followerId: data.updatedFollow.followerId}))
+                toast.success(data.message)
             }
-        } catch (error) {
-            console.error('Error deleting post:', error)
-            toast.error('Could not connect to the server')
         }
+            
+        followUser( postId, updatedUser, '/api/post/followUser/')
     }
+
+    const handleUnfollowUser = ( postId ) => {
+        const updatedUser = ( data ) => {
+            if ( data.updatedUnfollow ) {
+                setAccountUser( prevAccountUser => ({...prevAccountUser, followerId: data.updatedUnfollow.followerId }))
+                toast.success(data.message)
+            }
+        }
+
+        unfollowUser( postId, '/api/profile/unfollowUser/', updatedUser )
+    }
+
+    const handleDeletePost = ( postId ) => {
+        const updatedPost = () => {
+            setPost({})
+            navigate(`/profile/${user?._id}`)
+        }
+
+        deletePost( postId, updatedPost, `/api/post/deletePost/` )
+    }
+
+    // const likePost = async (postId) => {
+    //     try {
+        //         // const res = await fetch(`/api/post/likePost/${postId}`,{
+    //         //     method: 'PUT',
+    //         //     credentials: 'include',
+    //         // })
+            
+    //         // const data = await res.json()
+            
+    //         if ( res.ok ) {
+    //             if ( data.updatedUser && data.updatedLike ) {
+    //                 // setUser( prevUser => ({...prevUser, likedPostId: data.updatedUser.likedPostId}))
+    //                 setPost( prevPost => ( prevPost._id === postId ? { ...prevPost, likes: data.updatedLike.likes } : prevPost )
+    //                 )
+    //                 // setAccountUser( prevAccountUser => ( prevAccountUser._id === user._id ? {...prevAccountUser, likedPostId: data.updatedUser.likedPostId } : prevAccountUser ))
+    //                 toast.success(data.message)
+    //             } else {
+    //                 console.error('Error in liking post:', data.message || 'Unknown error')
+    //                 toast.error(data.message)
+    //             }
+    //         }
+    //     } catch (error) {
+    //         console.error('Error in liking post:', error)
+    //         toast.error('Could not connect to the server')
+    //     }
+
+    // }
+    
+    // const unlikePost = async (postId) => {
+    //     try {
+    //         const res = await fetch(`/api/post/minusLikePost/${postId}`,{
+    //             method: 'PUT',
+    //             credentials: 'include',
+    //         })
+    
+    //         const data = await res.json()
+            
+    //         if ( res.ok ) {
+    //             if ( data.updatedUser && data.updatedLike ) {
+    //                 setUser( prevUser => ({...prevUser, likedPostId: data.updatedUser.likedPostId}))
+    //                 setPost( prevPost => ( prevPost._id === postId ? { ...prevPost, likes: data.updatedLike.likes } : prevPost ))
+    //                 setAccountUser( prevAccountUser => ( prevAccountUser._id === user._id ? {...prevAccountUser, likedPostId: data.updatedUser.likedPostId } : prevAccountUser ))
+    //                 toast.success(data.message)
+    //             }
+    //         } else {
+    //             console.error('Error in unliking post:', data.message || 'Unknown error')
+    //             toast.error(data.message)
+    //         }
+    //     } catch (error) {
+    //         console.error('Error in unliking post:', error)
+    //         toast.error('Could not connect to the server')
+    //     }
+        
+    // }
+
+    // const deletePost = async (postId) => {
+    //     try {
+    //         const res = await fetch(`/api/post/deletePost/${postId}`, {
+    //             method: 'DELETE',
+    //             credentials: 'include',
+    //         })
+            
+    //         const data = await res.json()
+            
+    //         if ( res.status === 200 ) {
+    //             setPost({})
+    //             navigate(`/profile/${user._id}`)
+    //             toast.success(data.message || 'Post deleted successfully!' )
+    //         } else {
+    //             console.error('Error deleting post:', data.message || 'Unknown error')
+    //             toast.error(data.message)
+    //         }
+    //     } catch (error) {
+    //         console.error('Error deleting post:', error)
+    //         toast.error('Could not connect to the server')
+    //     }
+    // }
 
     // const followUser = async (userId) => {
     //     try {
@@ -307,14 +392,14 @@ const Post = () => {
                                               <UnfollowButton
                                                 classNameOne='mt-2'
                                                 userId={accountUser?._id}
-                                                unfollowUser={( userId ) => unfollowUser( userId, '/api/post/unfollowUser/')}
-                                            />
+                                                unfollowUser={ handleUnfollowUser }
+                                                />
                                       ):(
-                                              <FollowButton
-                                                classNameOne='mt-2'
-                                                userId={accountUser?._id}
-                                                followUser={( userId ) => followUser( userId, '/api/post/followUser/')}
-                                            />
+                                                <FollowButton
+                                                    classNameOne='mt-2'
+                                                    userId={accountUser?._id}
+                                                    followUser={handleFollowUser}
+                                                />
                                       )
                                   )}
       
@@ -337,8 +422,18 @@ const Post = () => {
                       {/* Profile Feed for users without post */}
                       <section className="w-full md:w-2/4 order-3 md:order-2 pt-4 px-1">
                           <ul className="mt-5">
-                                  <ProfilePost key={post?._id} post={post} comments={comments} user={user} accountUser={accountUser} likePost={likePost} unlikePost={unlikePost} deletePost={deletePost} classNameOne="w-full"
-                                    addComment={( comment, postId ) => addComment( comment, postId, `/api/post/comments/`)}/>
+                                    <ProfilePost
+                                        key={post?._id}
+                                        post={post}
+                                        comments={comments}
+                                        user={user}
+                                        accountUser={accountUser} 
+                                        likePost={handleLikePost}
+                                        unlikePost={handleUnlikePost}
+                                        deletePost={handleDeletePost}
+                                        classNameOne="w-full"
+                                        addComment={( comment, postId ) => addComment( comment, postId, `/api/post/comments/`)}
+                                    />
                           </ul>            
                       </section>
                       

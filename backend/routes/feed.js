@@ -3,6 +3,9 @@ const router = express.Router()
 import { getFeed, createPostInFeed, likePostInFeed, minusLikeInFeed, /*deletePostInFeed,*/ createCommentInFeed, followUserInFeed, unfollowUserInFeed } from '../controllers/feed.js'
 import upload  from '../middleware/multer.js'
 import { ensureAuth } from '../middleware/auth.js'
+import { arcjetProtection } from '../middleware/arcjet.js'
+
+router.use(arcjetProtection)
 
 // Feed Routes
 router.get('/', ensureAuth, getFeed)

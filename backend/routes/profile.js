@@ -3,6 +3,9 @@ const router = express.Router()
 import upload from '../middleware/multer.js'
 import { ensureAuth } from '../middleware/auth.js'
 import { getProfile, createPostInProfile, likePostInProfile, minusLikeInProfile, deletePostInProfile, followUserInProfile, unfollowUserInProfile, uploadProfilePhotoInProfile, changeProfilePhotoInProfile, createCommentInProfile } from '../controllers/profile.js'
+import { arcjetProtection } from '../middleware/arcjet.js'
+
+router.use(arcjetProtection)
 
 // Profile Routes
 router.get('/:id', ensureAuth, getProfile)

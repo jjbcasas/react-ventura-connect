@@ -3,7 +3,8 @@ import React, {
   useContext,
   useState,
   useEffect,
-  useMemo
+  useMemo,
+  useCallback
 } from 'react';
 // import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast';
@@ -19,33 +20,43 @@ export const AuthProvider = ({ children }) => {
   // const API_BASE_URL = 'http://localhost:5000'; // Your backend URL
 
   // Function to check auth status on initial app load
-    const checkAuthStatus = async () => {
+    const checkAuthStatus = useCallback( async ( signal ) => {
         try {
             setIsLoading(true); // Start loading
             const res = await fetch(`/api/user`, {
               method: 'GET',
-              credentials: 'include'
-            });
+              credentials: 'include',
+              signal: signal
+            })
             const data = await res.json()
 
             if (data.isAuthenticated && data.user) {
                 setUser(data.user);
                 setIsAuthenticated(true);
                 // toast.success(data.message || 'Welcome back!');
+
+                setIsLoading(false)
             } else {
                 setUser(null);
                 setIsAuthenticated(false);
                 // toast.error(data.message || 'You are not logged in.');
+                
+                setIsLoading(false)
             }
         } catch (error) {
+          if ( error instanceof Error && error.name === 'AbortError') {
+                    console.log('Request was cancelled');
+                    return; // Stop execution, no state should be set.
+                }
+
             setUser(null);
             setIsAuthenticated(false);
             console.error('Error checking auth status:', error);
             // toast.error('Failed to connect to authentication server.');
-        } finally {
-            setIsLoading(false) // Finished loading
+            
+            setIsLoading(false)
         }
-    };
+    })
 
     // Function to handle user signup
     const signup = async (createUser) => {
@@ -177,7 +188,12 @@ export const AuthProvider = ({ children }) => {
 
   // Run checkAuthStatus once on component mount
   useEffect(() => {
-    checkAuthStatus();
+    const controller = new AbortController()
+    checkAuthStatus(controller.signal)
+    
+    return () => {
+      controller.abort(); 
+    }
   }, []);
 
   const authContextValue = useMemo(() => ({

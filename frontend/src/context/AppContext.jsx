@@ -2,7 +2,8 @@ import React, {
     createContext,
     useContext,
     useState,
-    useMemo
+    useMemo,
+    useCallback
 } from 'react'
 import toast from 'react-hot-toast'
 import { useAuth } from "../context/AuthContext"
@@ -15,7 +16,7 @@ export const AppProvider = ({ children }) => {
     const [ accountUser, setAccountUser ] = useState({})
     const { user, setUser } = useAuth()
 
-    const addPost = async (formData, apiUrl) => {
+    const addPost = useCallback( async (formData, apiUrl) => {
         try {
             const res = await fetch(apiUrl, {
                 method: 'POST',
@@ -26,7 +27,7 @@ export const AppProvider = ({ children }) => {
 
             if ( res.ok ) {
                 if (data.post) {
-                    setPosts([data.post, ...posts])
+                    setPosts(prevPosts => [data.post, ...prevPosts ])
                     toast.success(data.message)
                 }
             } else {
@@ -38,9 +39,9 @@ export const AppProvider = ({ children }) => {
             console.error('Error adding a post:', error)
             toast.error('Could not connect to the server')
         }
-    }
+    }, [] )
 
-    const deletePost = async (postId, apiUrl) => {
+    const deletePost = useCallback( async (postId, callback, apiUrl) => {
         try {
             const res = await fetch(`${apiUrl}${postId}`, {
                 method: 'DELETE',
@@ -50,8 +51,9 @@ export const AppProvider = ({ children }) => {
             const data = await res.json()
             
             if ( res.status === 200 ) {
-                setPosts(posts.filter( post => post._id !== postId))
+                callback()
                 toast.success(data.message || 'Post deleted successfully!' )
+                // setPosts(prevPosts => prevPosts.filter( post => post._id !== postId))
             } else {
                 console.error('Error deleting post:', data.message || 'Unknown error')
                 toast.error(data.message)
@@ -60,9 +62,9 @@ export const AppProvider = ({ children }) => {
             console.error('Error deleting post:', error)
             toast.error('Could not connect to the server')
         }
-    }
+    }, [] )
 
-    const addComment = async(comment, postId, apiUrl) => {
+    const addComment = useCallback( async(comment, postId, apiUrl) => {
         try {
             const res = await fetch(`${apiUrl}${postId}`,{
                 method: 'POST',
@@ -77,7 +79,7 @@ export const AppProvider = ({ children }) => {
 
             if ( res.ok ) {
                 if (data.comment){
-                    setComments([ data.comment, ...comments ])
+                    setComments( prevComments => [ data.comment, ...prevComments ])
                     toast.success(data.message)
                 }
             } else {
@@ -88,21 +90,22 @@ export const AppProvider = ({ children }) => {
             console.error('Error adding a comment:', error)
             toast.error('Could not connect to the server')
         }
-    }
+    }, [] )
 
-    const followUserInFeed = async (userId) => {
+    const followUser = useCallback( async ( userId, callback, apiUrl ) => {
         try {
-            const res = await fetch(`/api/feed/followUser/${userId}`,{
+            const res = await fetch(`${apiUrl}${userId}`,{
                 method: 'PUT',
                 credentials: 'include',
             })
             const data = await res.json()
     
             if( res.ok ) {
-                if ( data.updatedFollowing ) {
-                    setUser({...user, followingId: data.updatedFollowing.followingId})
-                    toast.success(data.message)
-                }
+                callback( data )
+                // if ( data.updatedFollowing ) {
+                //     setUser( prevUser => ({...prevUser, followingId: data.updatedFollowing.followingId}))
+                //     toast.success(data.message)
+                // }
             } else {
                 console.error('Error following a user:', data.message || 'Unknown error')
                 toast.error(data.message)
@@ -111,21 +114,22 @@ export const AppProvider = ({ children }) => {
             console.error('Error following a user:', error)
             toast.error('Could not connect to the server')
         }
-    }
+    }, [] )
 
-    const unfollowUserInFeed = async (userId) => {
+    const unfollowUser = useCallback( async ( userId, apiUrl, callback ) => {
         try {
-            const res = await fetch(`/api/feed/unfollowUser/${userId}`,{
+            const res = await fetch(`${apiUrl}${userId}`,{
                 method: 'PUT',
                 credentials: 'include',
             })
             const data = await res.json()
     
             if ( res.ok ) {
-                if ( data.updatedUnfollowing ) {
-                    setUser({...user, followingId: data.updatedUnfollowing.followingId })
-                    toast.success(data.message)
-                }
+                callback(data)
+                // if ( data.updatedUnfollow ) {
+                //     setAccountUser( prevAccountUser => ({...prevAccountUser, followerId: data.updatedUnfollow.followerId }))
+                //     toast.success(data.message)
+                // }
             } else {
                 console.error('Error unfollowing a user:', data.message || 'Unknown error')
                 toast.error(data.message)
@@ -134,24 +138,28 @@ export const AppProvider = ({ children }) => {
             console.error('Error unfollowing a user:', error)
             toast.error('Could not connect to the server')
         }
-    }
+    }, [] )
 
-    const likePostInFeed = async (postId) => {
+    const likePost = useCallback( async (postId, callback, apiUrl ) => {
         try {
-            const res = await fetch(`/api/feed/likePost/${postId}`,{
+            const res = await fetch(`${apiUrl}${postId}`,{
                 method: 'PUT',
                 credentials: 'include',
             })
-    
+            
             const data = await res.json()
-    
+            
             if ( res.ok ) {
                 if ( data.updatedUser && data.updatedLike ) {
-                    setUser({...user, likedPostId: data.updatedUser.likedPostId})
-                    setPosts(posts.map( post => (
-                        post._id === postId ? { ...post, likes: data.updatedLike.likes } : post
-                    )))
-                    toast.success(data.message)
+                    setUser( prevUser => ({...prevUser, likedPostId: data.updatedUser.likedPostId}))
+                    callback(data)
+                    // setter( prevPost => ( prevPost._id === postId ? { ...prevPost, likes: data.updatedLike.likes } : prevPost )
+                    // )
+                    // setAccountUser( prevAccountUser => ( 
+                    //     prevAccountUser?._id === user?._id ?
+                    //     {...prevAccountUser, likedPostId: data.updatedUser.likedPostId }
+                    //     : prevAccountUser ))
+                    // toast.success(data.message)
                 } else {
                     console.error('Error in liking post:', data.message || 'Unknown error')
                     toast.error(data.message)
@@ -162,24 +170,24 @@ export const AppProvider = ({ children }) => {
             toast.error('Could not connect to the server')
         }
 
-    }
+    }, [] )
 
-    const unlikePostInFeed = async (postId) => {
+    const unlikePost = useCallback( async ( postId, callback, apiUrl ) => {
         try {
-            const res = await fetch(`/api/feed/minusLike/${postId}`,{
+            const res = await fetch(`${apiUrl}${postId}`,{
                 method: 'PUT',
                 credentials: 'include',
             })
     
             const data = await res.json()
-    
+            
             if ( res.ok ) {
                 if ( data.updatedUser && data.updatedLike ) {
-                    setUser({...user, likedPostId: data.updatedUser.likedPostId})
-                    setPosts(posts.map( post => (
-                        post._id === postId ? { ...post, likes: data.updatedLike.likes } : post
-                    )))
-                    toast.success(data.message)
+                    setUser( prevUser => ({...prevUser, likedPostId: data.updatedUser.likedPostId}))
+                    callback( data )
+                    // setPost( prevPost => ( prevPost._id === postId ? { ...prevPost, likes: data.updatedLike.likes } : prevPost ))
+                    // setAccountUser( prevAccountUser => ( prevAccountUser?._id === user?._id ? {...prevAccountUser, likedPostId: data.updatedUser.likedPostId } : prevAccountUser ))
+                    // toast.success(data.message)
                 }
             } else {
                 console.error('Error in unliking post:', data.message || 'Unknown error')
@@ -189,10 +197,10 @@ export const AppProvider = ({ children }) => {
             console.error('Error in unliking post:', error)
             toast.error('Could not connect to the server')
         }
+        
+    }, [] )
 
-    }
-
-    const uploadPhoto = async (formData, apiUrl) => {
+    const uploadPhoto = useCallback( async (formData, apiUrl) => {
         try {
             const res = await fetch(apiUrl, {
                 method: 'PUT',
@@ -203,12 +211,12 @@ export const AppProvider = ({ children }) => {
 
             if ( res.ok ){
                 if ( data.newProfileImage.profileImage ){
-                    setUser({...user, profileImage: data.newProfileImage.profileImage})
-                    setAccountUser(
-                        accountUser._id === user._id
-                            ? {...accountUser, profileImage: data.newProfileImage.profileImage}
-                            : accountUser
-                    )
+                    setUser( prevUser => ({...prevUser, profileImage: data.newProfileImage.profileImage}))
+                    setAccountUser( prevAccountUser => (
+                        prevAccountUser._id === user._id
+                            ? {...prevAccountUser, profileImage: data.newProfileImage.profileImage}
+                            : prevAccountUser
+                    ))
                     toast.success(data.message)
                 }
             } else {
@@ -219,9 +227,9 @@ export const AppProvider = ({ children }) => {
             console.error('Error uploading photo:', error)
             toast.error('Could not connect to the server')
         }
-    }
+    }, [] )
 
-    const changePhoto = async (formData, apiUrl ) => {
+    const changePhoto = useCallback( async (formData, apiUrl ) => {
         try {
             const res = await fetch(apiUrl, {
                 method: 'PUT',
@@ -232,12 +240,12 @@ export const AppProvider = ({ children }) => {
 
             if ( res.ok ){
                 if ( data.newProfileImage.profileImage ){
-                    setUser({...user, profileImage: data.newProfileImage.profileImage})
-                    setAccountUser(
-                        accountUser._id === user._id
-                            ? {...accountUser, profileImage: data.newProfileImage.profileImage}
-                            : accountUser
-                    )
+                    setUser( prevUser => ({...prevUser, profileImage: data.newProfileImage.profileImage}))
+                    setAccountUser( prevAccountUser => (
+                        prevAccountUser._id === user._id
+                            ? {...prevAccountUser, profileImage: data.newProfileImage.profileImage}
+                            : prevAccountUser
+                    ))
                     toast.success(data.message)
                 }
             } else {
@@ -248,53 +256,7 @@ export const AppProvider = ({ children }) => {
             console.error('Error uploading photo:', error)
             toast.error('Could not connect to the server')
         }
-    }
-
-    const followUser = async ( userId, apiUrl ) => {
-        try {
-            const res = await fetch(`${apiUrl}${userId}`,{
-                method: 'PUT',
-                credentials: 'include',
-            })
-            const data = await res.json()
-    
-            if( res.ok ) {
-                if ( data.updatedFollow ) {
-                    setAccountUser({...accountUser, followerId: data.updatedFollow.followerId})
-                    toast.success(data.message)
-                }
-            } else {
-                console.error('Error following a user:', data.message || 'Unknown error')
-                toast.error(data.message)
-            }
-        } catch (error) {
-            console.error('Error following a user:', error)
-            toast.error('Could not connect to the server')
-        }
-    }
-
-    const unfollowUser = async ( userId, apiUrl ) => {
-        try {
-            const res = await fetch(`${apiUrl}${userId}`,{
-                method: 'PUT',
-                credentials: 'include',
-            })
-            const data = await res.json()
-    
-            if ( res.ok ) {
-                if ( data.updatedUnfollow ) {
-                    setAccountUser({...accountUser, followerId: data.updatedUnfollow.followerId })
-                    toast.success(data.message)
-                }
-            } else {
-                console.error('Error unfollowing a user:', data.message || 'Unknown error')
-                toast.error(data.message)
-            }
-        } catch (error) {
-            console.error('Error unfollowing a user:', error)
-            toast.error('Could not connect to the server')
-        }
-    }
+    }, [] )
 
     const appContextValue = useMemo(()=> ({
         posts,
@@ -306,15 +268,13 @@ export const AppProvider = ({ children }) => {
         addPost,
         deletePost,
         addComment,
-        followUserInFeed,
-        unfollowUserInFeed,
-        likePostInFeed,
-        unlikePostInFeed,
+        likePost,
+        unlikePost,
         followUser,
         unfollowUser,
         uploadPhoto,
         changePhoto
-    }), [ addPost, posts, setPosts, deletePost, addComment, comments, setComments, accountUser, setAccountUser, followUserInFeed, unfollowUserInFeed, likePostInFeed, unlikePostInFeed, followUser, unfollowUser, uploadPhoto, changePhoto ])
+    }), [ addPost, posts, setPosts, deletePost, addComment, comments, setComments, accountUser, setAccountUser, likePost, unlikePost, followUser, unfollowUser, uploadPhoto, changePhoto ])
   return (
     
     <AppContext.Provider value={appContextValue}>

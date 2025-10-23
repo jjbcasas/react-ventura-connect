@@ -10,10 +10,10 @@ import { useApp } from "../context/AppContext"
 
 const Feed = () => {
     // const [posts, setPosts] = useState([])
-    const [allUsers, setAllUsers] = useState([])
     // const [comments, setComments] = useState([])
-    const [loading, setLoading] = useState(true)
     // const { user, setUser } = useOutletContext()
+    const [allUsers, setAllUsers] = useState([])
+    const [loading, setLoading] = useState(true)
     const fileInputRef = useRef(null)
     const { user, setUser } = useAuth()
     const {
@@ -24,18 +24,20 @@ const Feed = () => {
         addComment,
         comments,
         setComments,
-        followUserInFeed,
-        unfollowUserInFeed,
-        likePostInFeed,
-        unlikePostInFeed
+        followUser,
+        unfollowUser,
+        likePost,
+        unlikePost
     } = useApp()
 
     useEffect( () => {
+        const controller = new AbortController()
         setLoading(true)
         const fetchData = async () => {
             try {
                 const res = await fetch(`/api/feed`, {
-                    credentials: 'include'
+                    credentials: 'include',
+                    signal: controller.signal
                 })
                 const data = await res.json()
 
@@ -45,9 +47,13 @@ const Feed = () => {
                         setAllUsers(data.allUsers)
                         setComments(data.comments)
                     }
+
+                    setLoading(false)
                 } else {
                     console.error('Error fetching data:', data.message)
                     toast.error(data.message)
+
+                    setLoading(false)
                 }
                     // for Axios
                     // try {
@@ -72,15 +78,84 @@ const Feed = () => {
                         // }
                     //  } finally {
             } catch (error) {
+                if ( error instanceof Error && error.name === 'AbortError') {
+                    console.log('Request was cancelled');
+                    return; // Stop execution, no state should be set.
+                }
+
                 console.error('Error fetching data:',error)
                 toast.error('Could not connect to the server')
-            } finally {
+                
                 setLoading(false)
             }
         }
-
         fetchData()
+
+        return () => {
+            controller.abort(); 
+        }
     }, [])
+
+    const handleFollowUser = ( userId ) => {
+        const updatedUser = ( data ) => {
+            if ( data.updatedFollowing ) {
+                setUser( prevUser => ({...prevUser, followingId: data.updatedFollowing.followingId }))
+                toast.success( data.message )
+            }
+        }
+
+        followUser( userId, updatedUser, `/api/feed/followUser/` )
+    }
+
+    const handleUnfollowUser = ( postId ) => {
+        const updatedUser = ( data ) => {
+            if ( data.updatedUnfollowing ) {
+                setUser( prevUser => ({...prevUser, followingId: data.updatedUnfollowing.followingId }))
+                toast.success(data.message)
+            }
+        }
+
+        unfollowUser( postId, `/api/feed/unfollowUser/`, updatedUser )
+    }
+
+    const handleLikePost = ( postId ) => {
+        const updatedPost = ( data ) => {
+            setPosts( prevPosts => prevPosts.map( post => (
+                post._id === postId ?
+                    { ...post, likes: data.updatedLike.likes }
+                    : post
+            )))
+
+            toast.success(data.message)
+        }
+
+        likePost( postId, updatedPost, `/api/feed/likePost/` )
+    }
+
+    const handleUnlikePost = ( postId ) => {
+        const updatedPost = ( data ) => {
+            setPosts( prevPosts => prevPosts.map( post => (
+                post?._id === postId ?
+                    { ...post, likes: data.updatedLike.likes }
+                    : post
+            )))
+
+            toast.success(data.message)
+        }
+
+        unlikePost( postId, updatedPost, `/api/feed/minusLike/` )
+    }
+
+    // const handleDeletePost = ( postId ) => {
+    //     const updatedPost = () => {
+    //         setPosts( prevPosts => (
+    //             prevPosts?.filter( post => (
+    //                 post._id !== postId
+    //         ))))
+    //     }
+
+    //     deletePost( postId, updatedPost, `/api/feed/deletePost/` )
+    // }
 
     // const addPost = async (formData) => {
     //     try {
@@ -264,7 +339,12 @@ const Feed = () => {
             <div className="w-3/4 sm:w-2/3 pt-4">
                 
                 <div className="w-full md:w-3/4 mx-auto grow-1 px-2">
-                    <AddPost addPost={(formData)=> addPost(formData, '/api/feed/createPost')} fileInputRef={fileInputRef} width='w-full grow-2' divWidth='w-full' />
+                    <AddPost
+                        addPost={(formData)=> addPost(formData, '/api/feed/createPost')}
+                        fileInputRef={fileInputRef}
+                        width='w-full grow-2'
+                        divWidth='w-full'
+                    />
                 </div>
                     { loading ? (
                         <Spinner loading={loading} />
@@ -272,13 +352,17 @@ const Feed = () => {
                         <>
                             <ul>
                                 { posts.map((post) => (
-                                    <Post key={post._id} user={user} post={post} comments={comments}
-                                        likePost={likePostInFeed}
-                                        unlikePost={unlikePostInFeed} 
-                                        deletePost={( postId ) => deletePost(postId, '/api/feed/deletePost/')} 
+                                    <Post
+                                        key={post._id}
+                                        user={user}
+                                        post={post}
+                                        comments={comments}
+                                        likePost={handleLikePost}
+                                        unlikePost={handleUnlikePost} 
                                         addComment={( comment, postId ) => addComment(comment, postId, '/api/feed/comments/')}
-                                        followUser={followUserInFeed}
-                                        unfollowUser={unfollowUserInFeed}
+                                        followUser={handleFollowUser}
+                                        unfollowUser={ handleUnfollowUser}
+                                        /*deletePost={handleDeletePost}*/
                                     />
                                 ))}
                             </ul>
@@ -296,7 +380,11 @@ const Feed = () => {
                         <ul className="flex flex-wrap justify-center">
                             { allUsers.map(users => (
                                 !user?.followingId?.includes(users._id) &&
-                                    <ProfileRecommend key={users._id} following={users} width='w-16' />
+                                    <ProfileRecommend
+                                        key={users._id}
+                                        following={users}
+                                        width='w-16'
+                                    />
                             ))}
                         </ul>
                     </div>

@@ -18,8 +18,8 @@ const Profile = () => {
     // const [comments, setComments] = useState([])
     // const [accountUser, setAccountUser] = useState({})
     // const [usersFriends, setUsersFriends] = useState([])
-    const [loading, setLoading] = useState(true)
     // const { user, setUser /*, setMessages*/ } = useOutletContext()
+    const [loading, setLoading] = useState(true)
     const { id } = useParams()
     const { user, setUser } = useAuth()
     const {
@@ -28,6 +28,8 @@ const Profile = () => {
         setPosts,
         deletePost,
         addComment,
+        likePost,
+        unlikePost,
         comments,
         setComments,
         accountUser,
@@ -39,11 +41,13 @@ const Profile = () => {
     } = useApp()
 
     useEffect( () => {
+        const controller = new AbortController()
         setLoading(true)
         const fetchData = async () => {
             try {
                 const res = await fetch(`/api/profile/${id}`, {
-                  credentials: 'include'
+                  credentials: 'include',
+                  signal: controller.signal
               })
                 const data = await res.json()
 
@@ -53,20 +57,105 @@ const Profile = () => {
                         setComments(data.comments)
                         setAccountUser(data.accountUser)
                     }
+
+                    setLoading(false)
                 } else {
                     console.error('Error fetching data:', data.message)
                     toast.error(data.message)
+
+                    setLoading(false)
                 }
             } catch (error) {
+                if ( error instanceof Error && error.name === 'AbortError') {
+                    console.log('Request was cancelled');
+                    return; // Stop execution, no state should be set.
+                }
+
                 console.error('Error fetching data:',error)
                 toast.error('Could not connect to the server')
-            } finally {
+                
                 setLoading(false)
             }
         }
         fetchData()
+
+        return () => {
+            controller.abort(); 
+        }
+
     }, [id])
 
+    const handleLikePost = ( postId ) => {
+        const updatedPost = ( data ) => {
+            setPosts( prevPosts => ( 
+                prevPosts?.map( post => (
+                    post?._id === postId ?
+                        { ...post, likes: data.updatedLike.likes }
+                        : post
+            ))))
+            setAccountUser( prevAccountUser => ( 
+                prevAccountUser?._id === user?._id ?
+                    {...prevAccountUser, likedPostId: data.updatedUser.likedPostId }
+                    : prevAccountUser ))
+
+            toast.success(data.message)
+        }
+
+        likePost( postId, updatedPost, `/api/profile/likePost/`)
+    }
+
+    const handleUnlikePost = ( postId ) => {
+        const updatedPost = ( data ) => {
+            setPosts( prevPosts => ( 
+                prevPosts?.map( post => (
+                    post?._id === postId ?
+                        { ...post, likes: data.updatedLike.likes }
+                        : post
+            ))))
+
+            setAccountUser( prevAccountUser => (
+                prevAccountUser?._id === user?._id ?
+                {...prevAccountUser, likedPostId: data.updatedUser.likedPostId }
+                : prevAccountUser ))
+
+            toast.success(data.message)
+        }
+
+        unlikePost( postId, updatedPost, `/api/profile/minusLikePost/`)
+    }
+
+    const handleFollowUser = ( postId ) => {
+        const updatedUser = ( data ) => {
+            if ( data.updatedFollow ) {
+                setAccountUser( prevAccountUser => ({...prevAccountUser, followerId: data.updatedFollow.followerId}))
+                toast.success(data.message)
+            }
+        }
+
+        followUser( postId, updatedUser, '/api/profile/followUser/')
+    }
+
+    const handleUnfollowUser = ( postId ) => {
+        const updatedUser = ( data ) => {
+            if ( data.updatedUnfollow ) {
+                setAccountUser( prevAccountUser => ({...prevAccountUser, followerId: data.updatedUnfollow.followerId }))
+                toast.success(data.message)
+            }
+        }
+
+        unfollowUser( postId, '/api/profile/unfollowUser/', updatedUser )
+    }
+
+    const handleDeletePost = ( postId ) => {
+        const updatedPost = () => {
+            setPosts( prevPosts => (
+                prevPosts?.filter( post => (
+                    post._id !== postId
+            ))))
+        }
+
+        deletePost( postId, updatedPost, `/api/profile/deletePost/` )
+    }
 
     // const addPost = async (formData) => {
     //     try {
@@ -139,63 +228,62 @@ const Profile = () => {
     //     }
     // }
 
-    const likePost = async (postId) => {
-        try {
-            const res = await fetch(`/api/profile/likePost/${postId}`,{
-                method: 'PUT',
-                credentials: 'include',
-            })
+    // const likePost = async (postId) => {
+    //     try {
+    //         const res = await fetch(`/api/profile/likePost/${postId}`,{
+    //             method: 'PUT',
+    //             credentials: 'include',
+    //         })
     
-            const data = await res.json()
+    //         const data = await res.json()
     
-            if ( res.ok ) {
-                if ( data.updatedUser && data.updatedLike ) {
-                    setUser({...user, likedPostId: data.updatedUser.likedPostId})
-                    setPosts(posts.map( post => (
-                        post._id === postId ? { ...post, likes: data.updatedLike.likes } : post
-                    )))
-                    setAccountUser( accountUser._id === user._id ? {...accountUser, likedPostId: data.updatedUser.likedPostId } : {...accountUser})
-                    toast.success(data.message)
-                } else {
-                    console.error('Error in liking post:', data.message || 'Unknown error')
-                    toast.error(data.message)
-                }
-            }
-        } catch (error) {
-            console.error('Error in liking post:', error)
-            toast.error('Could not connect to the server')
-        }
+    //         if ( res.ok ) {
+    //             if ( data.updatedUser && data.updatedLike ) {
+    //                 // setUser( prevUser => ({...prevUser, likedPostId: data.updatedUser.likedPostId}))
+    //                 setPosts( prevPosts => ( prevPosts.map( post => (
+    //                     post._id === postId ? { ...post, likes: data.updatedLike.likes } : post
+    //                 ))))
+    //                 // setAccountUser( prevAccountUser => ( prevAccountUser._id === user._id ? {...prevAccountUser, likedPostId: data.updatedUser.likedPostId } : {...prevAccountUser }))
+    //                 toast.success(data.message)
+    //             } else {
+    //                 console.error('Error in liking post:', data.message || 'Unknown error')
+    //                 toast.error(data.message)
+    //             }
+    //         }
+    //     } catch (error) {
+    //         console.error('Error in liking post:', error)
+    //         toast.error('Could not connect to the server')
+    //     }
 
-    }
+    // }
 
-    const unlikePost = async (postId) => {
-        try {
-            const res = await fetch(`/api/profile/minusLikePost/${postId}`,{
-                method: 'PUT',
-                credentials: 'include',
-            })
+    // const unlikePost = async (postId) => {
+    //     try {
+    //         const res = await fetch(`/api/profile/minusLikePost/${postId}`,{
+    //             method: 'PUT',
+    //             credentials: 'include',
+    //         })
     
-            const data = await res.json()
+    //         const data = await res.json()
     
-            if ( res.ok ) {
-                if ( data.updatedUser && data.updatedLike ) {
-                    setUser({...user, likedPostId: data.updatedUser.likedPostId})
-                    setPosts(posts.map( post => (
-                        post._id === postId ? { ...post, likes: data.updatedLike.likes } : post
-                    )))
-                    setAccountUser( accountUser._id === user._id ? {...accountUser, likedPostId: data.updatedUser.likedPostId } : {...accountUser})
-                    toast.success(data.message)
-                }
-            } else {
-                console.error('Error in unliking post:', data.message || 'Unknown error')
-                toast.error(data.message)
-            }
-        } catch (error) {
-            console.error('Error in unliking post:', error)
-            toast.error('Could not connect to the server')
-        }
-
-    }
+    //         if ( res.ok ) {
+    //             if ( data.updatedUser && data.updatedLike ) {
+    //                 setUser( prevUser => ({...prevUser, likedPostId: data.updatedUser.likedPostId}))
+    //                 setPosts( prevPosts => ( prevPosts.map( post => (
+    //                     post._id === postId ? { ...post, likes: data.updatedLike.likes } : post
+    //                 ))))
+    //                 setAccountUser( prevAccountUser => ( prevAccountUser._id === user._id ? {...prevAccountUser, likedPostId: data.updatedUser.likedPostId } : prevAccountUser ))
+    //                 toast.success(data.message)
+    //             }
+    //         } else {
+    //             console.error('Error in unliking post:', data.message || 'Unknown error')
+    //             toast.error(data.message)
+    //         }
+    //     } catch (error) {
+    //         console.error('Error in unliking post:', error)
+    //         toast.error('Could not connect to the server')
+    //     }
+    // }
 
     // const deletePost = async (postId) => {
     //     try {
@@ -311,10 +399,20 @@ const Profile = () => {
                     <div className="flex md:flex-wrap sm:no-wrap flex-wrap justify-around">
                         <div className="w-full sm:w-1/3 md:w-full">
                         { accountUser?.profileImage ?
-                                
-                            <Avatar src={accountUser?.profileImage} user={accountUser} classNameOne='w-full pt-10' classNameTwo="w-20 mx-auto" />
+
+                            <Avatar
+                                src={accountUser?.profileImage}
+                                user={accountUser}
+                                classNameOne='w-full pt-10'
+                                classNameTwo="w-20 mx-auto"
+                            />
                             : /* No Profile Image */
-                            <Placeholder user={accountUser} classNameOne='w-full pt-10' classNameTwo='w-20 mx-auto'/> }
+                            <Placeholder
+                                user={accountUser}
+                                classNameOne='w-full pt-10'
+                                classNameTwo='w-20 mx-auto'
+                            />
+                        }
                         
                             {/* Upload Button for User */}
                             { accountUser?._id === user?._id ? (
@@ -336,13 +434,13 @@ const Profile = () => {
                                         <UnfollowButton
                                             classNameOne='mt-2'
                                             userId={accountUser?._id}
-                                            unfollowUser={( userId ) => unfollowUser( userId, '/api/profile/unfollowUser/')}
+                                            unfollowUser={ handleUnfollowUser }
                                         />
                                 ):(
                                         <FollowButton
                                             classNameOne='mt-2'
                                             userId={accountUser?._id}
-                                            followUser={( userId ) => followUser( userId, '/api/profile/followUser/')}
+                                            followUser={handleFollowUser}
                                         />
                                 )
                             )}
@@ -368,8 +466,16 @@ const Profile = () => {
                 <section className="w-full md:w-2/4 order-3 md:order-2 pt-4 px-1">
                     <ul className="mt-5">
                         { posts.map((post) => (
-                            <ProfilePost key={post?._id} post={post} comments={comments} user={user} accountUser={accountUser} likePost={likePost} unlikePost={unlikePost} classNameOne="w-full"
-                                deletePost={( postId ) => deletePost(postId, '/api/profile/deletePost/')} 
+                            <ProfilePost
+                                key={post?._id}
+                                post={post}
+                                comments={comments}
+                                user={user}
+                                accountUser={accountUser}
+                                likePost={handleLikePost}
+                                unlikePost={handleUnlikePost}
+                                deletePost={handleDeletePost} 
+                                classNameOne="w-full"
                                 addComment={( comment, postId ) => addComment( comment, postId, '/api/profile/comments/')}
                             />
                         ))}

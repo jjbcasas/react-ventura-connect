@@ -3,6 +3,9 @@ const router = express.Router()
 import upload from '../middleware/multer.js'
 import { getPost, followUserInPost, unfollowUserInPost, likePostInPost, minusLikeInPost, deletePostInPost, createCommentInPost, uploadProfilePhotoInPost, changeProfilePhotoInPost } from '../controllers/post.js'
 import { ensureAuth } from '../middleware/auth.js'
+import { arcjetProtection } from '../middleware/arcjet.js'
+
+router.use(arcjetProtection)
 
 // Post Routes
 router.get('/:id',ensureAuth, getPost)
